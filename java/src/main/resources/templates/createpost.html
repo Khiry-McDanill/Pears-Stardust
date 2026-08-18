@@ -1,30 +1,48 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
-<head th:replace="~{layout :: head('Create Post')}" ></head>
+<head th:replace="~{layout :: head('Create Post')}"></head>
 <body>
-<div th:replace="~{header :: header}"></div>
-<div class="container mt-4">
-    <h2>Create Post in <span th:text="${subforum.title}">Forum</span></h2>
-    <div th:if="${!errors.isEmpty()}" class="alert alert-danger">
-        <ul class="mb-0">
-            <li th:each="err : ${errors}" th:text="${err}">Error</li>
-        </ul>
-    </div>
-    <form th:action="@{/action_post(sub=${subforum.id})}" method="post">
-        <div class="form-group">
-            <label>Title</label>
-            <input type="text" name="title" class="form-control" required
-                   minlength="5" maxlength="139"/>
+<div class="stardust-shell">
+    <div th:replace="~{header :: header}"></div>
+
+    <main class="page">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">NEW DISCUSSION</p>
+                <h1>Create Post</h1>
+                <p>Forum: <span th:text="${subforum.title}">Forum</span></p>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Content</label>
-            <textarea name="content" class="form-control" rows="8" required
-                      minlength="11" maxlength="4999"></textarea>
+
+        <div th:if="${!errors.isEmpty()}" class="error-panel">
+            <ul>
+                <li th:each="err : ${errors}" th:text="${err}">Error</li>
+            </ul>
         </div>
-        <button type="submit" class="btn btn-primary">Post</button>
-        <a th:href="@{/subforum(sub=${subforum.id})}" class="btn btn-secondary ml-2">Cancel</a>
-    </form>
+
+        <form class="blueprint-form"
+              th:action="@{/action_post(sub=${subforum.id})}" method="post">
+
+            <div class="form-group">
+                <label for="post-title">Title</label>
+                <input id="post-title" type="text" name="title" required
+                       minlength="5" maxlength="139"/>
+            </div>
+
+            <div class="form-group">
+                <label for="post-content">Content</label>
+                <textarea id="post-content" name="content" required
+                          minlength="11" maxlength="4999"></textarea>
+            </div>
+
+            <div class="button-row">
+                <button type="submit">Publish Post</button>
+                <a th:href="@{/subforum(sub=${subforum.id})}"
+                   class="button-link">Cancel</a>
+            </div>
+        </form>
+    </main>
 </div>
 </body>
 </html>

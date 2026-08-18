@@ -3,17 +3,17 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:fragment="head(title)">
     <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
-    <title th:text="${title} + ' - ' + ${siteName}">Page - Schooner</title>
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title th:text="${title} + ' - ' + ${siteName}">Page - Stardust</title>
     <link rel="stylesheet" th:href="@{/style.css}"/>
 </head>
 <body>
 <div th:fragment="layout(title, content)">
-    <div th:replace="~{header :: header}"></div>
-    <div class="container mt-4">
-        <div th:replace="${content}"></div>
+    <div class="stardust-shell">
+        <div th:replace="~{header :: header}"></div>
+        <main class="page">
+            <div th:replace="${content}"></div>
+        </main>
     </div>
 </div>
 </body>

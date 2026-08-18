@@ -3,22 +3,38 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:replace="~{layout :: head('Forum Index')}"></head>
 <body>
-<div th:replace="~{header :: header}"></div>
-<div class="container mt-4">
-    <h2 th:text="${siteName} + ' - Forum Index'">Schooner - Forum Index</h2>
-    <p th:text="${siteDescription}">a schooner forum</p>
-    <hr/>
-    <div class="list-group subforum-list">
-        <a th:each="sf : ${subforums}"
-           th:href="@{/subforum(sub=${sf.id})}"
-           class="list-group-item list-group-item-action"
-           th:unless="${sf.hidden}">
-            <div class="d-flex justify-content-between">
-                <h5 class="mb-1" th:text="${sf.title}">Subforum Title</h5>
+<div class="stardust-shell">
+    <div th:replace="~{header :: header}"></div>
+
+    <main class="page">
+        <section class="section-heading">
+            <div>
+                <p class="eyebrow">STARDUST // DIRECTORY</p>
+                <h1 th:text="${siteName} + ' // Forum Index'">STARDUST // Forum Index</h1>
+                <p th:text="${siteDescription}">Discussion forum</p>
             </div>
-            <p class="mb-1 text-muted" th:text="${sf.description}">Description</p>
-        </a>
-    </div>
+        </section>
+
+        <section class="subforum-list">
+            <a th:each="sf : ${subforums}"
+               th:href="@{/subforum(sub=${sf.id})}"
+               th:unless="${sf.hidden}"
+               class="blueprint-card subforum-link">
+
+                <span class="title" th:text="${sf.title}">Subforum Title</span>
+                <span class="card-description" th:text="${sf.description}">Description</span>
+            </a>
+
+            <div th:if="${subforums.isEmpty()}" class="empty-state">
+                No subforums available.
+            </div>
+        </section>
+
+        <footer class="site-footer">
+            <span>STARDUST // FORUM SYSTEM</span>
+            <span>STATUS: ONLINE</span>
+        </footer>
+    </main>
 </div>
 </body>
 </html>
