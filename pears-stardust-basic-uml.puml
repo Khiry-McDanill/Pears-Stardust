@@ -1,0 +1,33 @@
+@startuml
+title Pears-Stardust Forum - Basic UML
+
+class User {
+  - Long id
+  - String username
+  - String email
+}
+
+class Post {
+  - Long id
+  - String title
+  - String content
+  - LocalDateTime createdAt
+}
+
+class Comment {
+  - Long id
+  - String content
+  - LocalDateTime createdAt
+}
+
+class Category {
+  - Long id
+  - String name
+}
+
+User "1" --> "0..*" Post : creates
+User "1" --> "0..*" Comment : writes
+Post "1" --> "0..*" Comment : has
+Category "1" --> "0..*" Post : contains
+
+@enduml
