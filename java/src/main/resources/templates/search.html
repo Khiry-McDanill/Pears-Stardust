@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{layout :: head('Search')}"></head>
+
+<body>
+
+<div class="stardust-shell">
+
+    <div th:replace="~{header :: header}"></div>
+
+    <main class="page">
+
+        <section class="section-heading">
+            <div>
+                <p class="eyebrow">STARDUST // SEARCH</p>
+
+                <h1>Search</h1>
+
+                <p>
+                    Search posts and users.
+                </p>
+            </div>
+        </section>
+
+
+        <!-- Search Form -->
+
+        <form class="blueprint-form"
+              th:action="@{/search}"
+              method="get">
+
+            <div class="form-group">
+
+                <label for="search">
+                    Search
+                </label>
+
+                <input
+                    id="search"
+                    type="text"
+                    name="q"
+                    th:value="${query}"
+                    placeholder="Search Stardust..."
+                />
+
+            </div>
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+
+        <!-- Search Results -->
+
+        <section th:if="${query != ''}"
+                 style="margin-top: 30px;">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <p class="eyebrow">
+                        RESULTS
+                    </p>
+
+                    <h2>
+                        Search Results
+                    </h2>
+
+                    <p>
+                        Results for:
+                        <strong th:text="${query}">
+                            search
+                        </strong>
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Posts -->
+
+            <section>
+
+                <h3 class="comments-heading">
+                    Posts
+                </h3>
+
+                <div class="post-list">
+
+                    <a th:each="post : ${posts}"
+                       th:href="@{/viewpost(post=${post.id})}"
+                       class="blueprint-card post-link">
+
+                        <div class="post-row">
+
+                            <div>
+
+                                <span
+                                    class="title"
+                                    th:text="${post.title}">
+                                    Post Title
+                                </span>
+
+                            </div>
+
+                            <div class="post-meta">
+
+                                <span>
+                                    BY
+                                </span>
+
+                                <span
+                                    th:text="${post.user.username}">
+                                    username
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+                <div th:if="${posts.isEmpty()}"
+                     class="empty-state">
+
+                    No posts found.
+
+                </div>
+
+            </section>
+
+
+            <!-- Users -->
+
+            <section style="margin-top: 30px;">
+
+                <h3 class="comments-heading">
+                    Users
+                </h3>
+
+                <div class="post-list">
+
+                    <div th:each="user : ${users}"
+                         class="blueprint-card">
+
+                        <span
+                            class="title"
+                            th:text="${user.username}">
+                            username
+                        </span>
+
+                    </div>
+
+                </div>
+
+                <div th:if="${users.isEmpty()}"
+                     class="empty-state">
+
+                    No users found.
+
+                </div>
+
+            </section>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>
