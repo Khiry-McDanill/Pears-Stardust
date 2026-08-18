@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+
+<body>
+
+<div th:replace="~{header :: header}"></div>
+
+<main class="container">
+
+    <h2>Messages</h2>
+    <p>Select a user to start or continue a conversation.</p>
+
+    <div th:each="user : ${users}">
+
+        <div th:if="${user.username != currentUser.username}">
+
+            <a th:href="@{/messages/{username}(username=${user.username})}"
+               th:text="${user.username}">
+                Username
+            </a>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>
