@@ -22,6 +22,18 @@
             </header>
 
             <div class="post-content" th:text="${post.content}">Content here</div>
+
+            <!-- Like Feature -->
+            <div sec:authorize="isAuthenticated()" style="margin-top: 20px;">
+                <form th:action="@{/action_like(post=${post.id})}" method="post">
+                    <button type="submit"
+                            th:text="${hasLiked ? '👎 Unlike' : '👍 Like'}">
+                        👍 Like
+                    </button>
+                    <span th:text="${likeCount}">0</span>
+                    <span>Likes</span>
+                </form>
+            </div>
         </article>
 
         <section>
