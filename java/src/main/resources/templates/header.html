@@ -2,27 +2,35 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <body>
-<header th:fragment="header" class="site-header">
-    <div class="header-content">
-        <div>
-            <a class="brand" th:href="@{/}" th:text="${siteName}">STARDUST</a>
-            <p class="brand-subtitle">Discussion Forum // System Online</p>
-        </div>
+<nav th:fragment="header" class="navbar navbar-dark forum-header">
+    <div class="container">
+        <a class="navbar-brand" th:href="@{/}" th:text="${siteName}">DIY HELPER</a>
 
-        <nav class="site-nav">
-            <a th:href="@{/}">Forum Index</a>
-
-            <span sec:authorize="isAuthenticated()" class="user-label"
-                  th:text="'USER: ' + ${currentUser}">USER: guest</span>
+        <div class="navbar-nav flex-row">
+            <a class="nav-link text-white mr-3" th:href="@{/}">Subforum Index</a>
 
             <span sec:authorize="isAuthenticated()">
-                <form th:action="@{/action_logout}" method="post" style="display:inline;">
-                    <button type="submit">Logout</button>
+                <a class="nav-link text-white mr-3 d-inline"
+                   th:href="@{/messages}">Messages</a>
+
+                <span class="text-white mr-2"
+                      th:text="'Hello, ' + ${currentUser}">Hello, user</span>
+
+                <form th:action="@{/action_logout}"
+                      method="post"
+                      class="d-inline">
+                    <button type="submit"
+                            class="btn btn-link nav-link text-white d-inline p-0">
+                        Logout
+                    </button>
                 </form>
             </span>
 
             <span sec:authorize="!isAuthenticated()">
-                <a th:href="@{/loginform}">Login / Register</a>
+                <a class="nav-link text-white d-inline"
+                   th:href="@{/loginform}">
+                    Login / Register
+                </a>
             </span>
         </nav>
     </div>

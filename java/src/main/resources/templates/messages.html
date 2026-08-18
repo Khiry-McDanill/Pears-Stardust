@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Messages</title>
+    <link rel="stylesheet" th:href="@{/style.css}">
+</head>
+<body>
+
+<div th:replace="~{header :: header}"></div>
+
+<main class="messages-page">
+
+    <h2>
+        Conversation with
+        <span th:text="${otherUser.username}">User</span>
+    </h2>
+
+    <div class="message-thread">
+
+        <div th:if="${#lists.isEmpty(messages)}">
+            <p>No messages yet.</p>
+        </div>
+
+        <div th:each="message : ${messages}" class="message">
+
+            <strong th:text="${message.sender.username}">
+                Username
+            </strong>
+
+            <p th:text="${message.content}">
+                Message content
+            </p>
+
+            <small th:text="${message.sentAt}">
+                Time
+            </small>
+
+        </div>
+
+    </div>
+
+    <form th:action="@{/messages/{username}(username=${otherUser.username})}"
+          method="post">
+
+        <textarea
+                name="content"
+                placeholder="Type a message..."
+                required></textarea>
+
+        <button type="submit">
+            Send
+        </button>
+
+    </form>
+
+</main>
+
+</body>
+</html>
