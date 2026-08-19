@@ -60,6 +60,11 @@
             </a>
 
             <a sec:authorize="isAuthenticated()"
+               th:href="@{/profile}">
+                Profile
+            </a>
+
+            <a sec:authorize="isAuthenticated()"
                th:href="@{/messages}">
                 Messages
             </a>
