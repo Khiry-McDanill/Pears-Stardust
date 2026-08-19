@@ -1,48 +1,52 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head th:replace="~{layout :: head('Create Post')}"></head>
+
 <body>
-<div class="stardust-shell">
-    <div th:replace="~{header :: header}"></div>
+    <div class="stardust-shell">
+        <div th:replace="~{header :: header}"></div>
 
-    <main class="page">
-        <div class="section-heading">
-            <div>
-                <p class="eyebrow">NEW DISCUSSION</p>
-                <h1>Create Post</h1>
-                <p>Forum: <span th:text="${subforum.title}">Forum</span></p>
-            </div>
-        </div>
-
-        <div th:if="${!errors.isEmpty()}" class="error-panel">
-            <ul>
-                <li th:each="err : ${errors}" th:text="${err}">Error</li>
-            </ul>
-        </div>
-
-        <form class="blueprint-form"
-              th:action="@{/action_post(sub=${subforum.id})}" method="post">
-
-            <div class="form-group">
-                <label for="post-title">Title</label>
-                <input id="post-title" type="text" name="title" required
-                       minlength="5" maxlength="139"/>
+        <main class="page">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">NEW DISCUSSION</p>
+                    <h1>Create Post</h1>
+                    <p>Forum: <span th:text="${subforum.title}">Forum</span></p>
+                </div>
             </div>
 
-            <div class="form-group">
-                <label for="post-content">Content</label>
-                <textarea id="post-content" name="content" required
-                          minlength="11" maxlength="4999"></textarea>
+            <div th:if="${!errors.isEmpty()}" class="error-panel">
+                <ul>
+                    <li th:each="err : ${errors}" th:text="${err}">Error</li>
+                </ul>
             </div>
 
-            <div class="button-row">
-                <button type="submit">Publish Post</button>
-                <a th:href="@{/subforum(sub=${subforum.id})}"
-                   class="button-link">Cancel</a>
-            </div>
-        </form>
-    </main>
-</div>
+            <form class="blueprint-form" th:action="@{/action_post(sub=${subforum.id})}" method="post">
+
+                <div class="form-group">
+                    <label for="post-title">Title</label>
+                    <input id="post-title" type="text" name="title" required minlength="5" maxlength="139" />
+                </div>
+
+                <div class="form-group">
+                    <label for="post-content">Content</label>
+                    <textarea id="post-content" name="content" required minlength="11" maxlength="4999"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="media-url">Media URL (optional)</label>
+                    <input id="media-url" type="url" name="mediaUrl" placeholder="Paste a YouTube or image URL"
+                        maxlength="1000" />
+                </div>
+
+                <div class="button-row">
+                    <button type="submit">Publish Post</button>
+                    <a th:href="@{/subforum(sub=${subforum.id})}" class="button-link">Cancel</a>
+                </div>
+            </form>
+        </main>
+    </div>
 </body>
+
 </html>
