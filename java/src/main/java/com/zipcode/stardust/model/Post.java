@@ -42,8 +42,14 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime postdate;
 
+    @Column(nullable = false)
+    private boolean pinned = false;
+
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     private List<Comment> comments = new ArrayList<>();
+
+    @Column(nullable = false)
+    private boolean locked = false;
 
     private static final int DAYS_PER_MONTH = 30;
     private static final long CACHE_TTL_SECONDS = 30;
@@ -102,6 +108,13 @@ public class Post {
     public void setSubforum(Subforum subforum) { this.subforum = subforum; }
     public LocalDateTime getPostdate() { return postdate; }
     public void setPostdate(LocalDateTime postdate) { this.postdate = postdate; }
+    public boolean isPinned() {
+    return pinned;
+}
+
+    public void setPinned(boolean pinned) {
+    this.pinned = pinned;
+}
     public List<Comment> getComments() { return comments; }
     public void setComments(List<Comment> comments) { this.comments = comments; }
 }

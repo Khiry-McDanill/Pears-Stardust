@@ -1,78 +1,247 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head th:replace="~{layout :: head(${post.title})}"></head>
+
 <body>
+
 <div class="stardust-shell">
+
     <div th:replace="~{header :: header}"></div>
 
     <main class="page">
+
         <div class="breadcrumb">
             <span th:utext="${breadcrumb}">FORUM / PATH</span>
         </div>
 
         <article>
+
             <header class="post-header">
-                <p class="eyebrow">DISCUSSION // POST</p>
-                <h1 th:text="${post.title}">Post Title</h1>
+
+                <p class="eyebrow">
+                    DISCUSSION // POST
+                </p>
+
+                <h1 th:text="${post.title}">
+                    Post Title
+                </h1>
+
                 <div class="post-meta">
-                    POSTED BY <strong th:text="${post.user.username}">author</strong>
-                    // <span th:text="${post.timeString}">time</span>
+
+                    POSTED BY
+                    <strong th:text="${post.user.username}">
+                        author
+                    </strong>
+
+                    //
+                    <span th:text="${post.timeString}">
+                        time
+                    </span>
+
+                    <!-- Pinned indicator -->
+                    <span th:if="${post.pinned}">
+                        // 📌 PINNED
+                    </span>
+
                 </div>
+
             </header>
 
-            <div class="post-content" th:text="${post.content}">Content here</div>
 
-            <!-- Like Feature -->
-            <div sec:authorize="isAuthenticated()" style="margin-top: 20px;">
-                <form th:action="@{/action_like(post=${post.id})}" method="post">
+            <div class="post-content"
+                 th:text="${post.content}">
+                Content here
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- EDIT / DELETE / PIN -->
+            <!-- ========================= -->
+
+            <div style="margin-top: 20px;">
+
+                <!-- Edit and Delete: Post Owner Only -->
+
+                <div th:if="${isLoggedIn and currentUser == post.user.username}">
+
+                    <a th:href="@{/editpost(post=${post.id})}">
+                        <button type="button">
+                            ✏️ Edit
+                        </button>
+                    </a>
+
+                    <form th:action="@{/action_deletepost(post=${post.id})}"
+                          method="post"
+                          style="display: inline;">
+
+                        <button type="submit"
+                                onclick="return confirm('Are you sure you want to delete this post?');">
+                            🗑️ Delete
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                <!-- Pin / Unpin: Admin Only -->
+
+                <div sec:authorize="hasRole('ADMIN')"
+                     style="margin-top: 10px;">
+
+                    <form th:action="@{/action_pinpost(post=${post.id})}"
+                          method="post">
+
+                        <button type="submit"
+                                th:text="${post.pinned ? '📌 Unpin Post' : '📌 Pin Post'}">
+                            📌 Pin Post
+                        </button>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- LIKE FEATURE -->
+            <!-- ========================= -->
+
+            <div sec:authorize="isAuthenticated()"
+                 style="margin-top: 20px;">
+
+                <form th:action="@{/action_like(post=${post.id})}"
+                      method="post">
+
                     <button type="submit"
                             th:text="${hasLiked ? '👎 Unlike' : '👍 Like'}">
                         👍 Like
                     </button>
-                    <span th:text="${likeCount}">0</span>
-                    <span>Likes</span>
+
+                    <span th:text="${likeCount}">
+                        0
+                    </span>
+
+                    <span>
+                        Likes
+                    </span>
+
                 </form>
+
             </div>
+
         </article>
 
+
+        <!-- ========================= -->
+        <!-- COMMENTS -->
+        <!-- ========================= -->
+
         <section>
+
             <h2 class="comments-heading">
-                Comments (<span th:text="${#lists.size(comments)}">0</span>)
+
+                Comments
+                (<span th:text="${#lists.size(comments)}">
+                    0
+                </span>)
+
             </h2>
 
-            <div th:each="comment : ${comments}" class="comment-block">
-                <p class="comment-content" th:text="${comment.content}">Comment content</p>
+
+            <div th:each="comment : ${comments}"
+                 class="comment-block">
+
+                <p class="comment-content"
+                   th:text="${comment.content}">
+                    Comment content
+                </p>
+
                 <small class="post-meta">
-                    BY <strong th:text="${comment.user.username}">author</strong>
-                    // <span th:text="${comment.timeString}">time</span>
+
+                    BY
+                    <strong th:text="${comment.user.username}">
+                        author
+                    </strong>
+
+                    //
+
+                    <span th:text="${comment.timeString}">
+                        time
+                    </span>
+
                 </small>
+
             </div>
 
-            <div th:if="${comments.isEmpty()}" class="empty-state">
+
+            <div th:if="${comments.isEmpty()}"
+                 class="empty-state">
+
                 No comments yet.
+
             </div>
+
         </section>
 
-        <section sec:authorize="isAuthenticated()" class="blueprint-form" style="margin-top:28px;">
-            <p class="eyebrow">RESPONSE</p>
-            <h3>Add a Comment</h3>
 
-            <form th:action="@{/action_comment(post=${post.id})}" method="post">
+        <!-- ========================= -->
+        <!-- ADD COMMENT -->
+        <!-- ========================= -->
+
+        <section sec:authorize="isAuthenticated()"
+                 class="blueprint-form"
+                 style="margin-top:28px;">
+
+            <p class="eyebrow">
+                RESPONSE
+            </p>
+
+            <h3>
+                Add a Comment
+            </h3>
+
+            <form th:action="@{/action_comment(post=${post.id})}"
+                  method="post">
+
                 <div class="form-group">
-                    <label for="comment-content">Comment</label>
-                    <textarea id="comment-content" name="content" required
+
+                    <label for="comment-content">
+                        Comment
+                    </label>
+
+                    <textarea id="comment-content"
+                              name="content"
+                              required
                               placeholder="Write your comment here..."></textarea>
+
                 </div>
 
-                <button type="submit">Submit Comment</button>
+                <button type="submit">
+                    Submit Comment
+                </button>
+
             </form>
+
         </section>
 
-        <div sec:authorize="!isAuthenticated()" class="empty-state">
-            <a th:href="@{/loginform}">Login</a> to post a comment.
+
+        <div sec:authorize="!isAuthenticated()"
+             class="empty-state">
+
+            <a th:href="@{/loginform}">
+                Login
+            </a>
+            to post a comment.
+
         </div>
+
     </main>
+
 </div>
+
 </body>
 </html>

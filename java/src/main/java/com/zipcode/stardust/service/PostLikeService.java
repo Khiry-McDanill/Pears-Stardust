@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 @Service
 public class PostLikeService {
 
     @Autowired
     private PostLikeRepository postLikeRepository;
 
-    @Transactional
     public boolean toggleLike(User user, Post post) {
 
         if (postLikeRepository.existsByUserAndPost(user, post)) {
@@ -24,7 +24,6 @@ public class PostLikeService {
 
         PostLike postLike = new PostLike(user, post);
         postLikeRepository.save(postLike);
-
         return true;
     }
 
