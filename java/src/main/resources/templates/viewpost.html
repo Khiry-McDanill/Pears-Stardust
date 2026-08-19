@@ -217,6 +217,25 @@
 
             </div>
 
+
+            <!-- ========================= -->
+            <!-- SHARE POST -->
+            <!-- ========================= -->
+
+            <div style="margin-top: 20px;">
+
+                <button type="button"
+                        class="blueprint-button"
+                        onclick="sharePost()">
+                    🔗 Share
+                </button>
+
+                <span id="share-message"
+                      style="margin-left: 10px;">
+                </span>
+
+            </div>
+
         </article>
 
 
@@ -328,6 +347,28 @@
     </main>
 
 </div>
+
+
+<!-- ========================= -->
+<!-- SHARE JAVASCRIPT -->
+<!-- ========================= -->
+
+<script>
+    function sharePost() {
+
+        const postUrl = window.location.href;
+        const message = document.getElementById("share-message");
+
+        navigator.clipboard.writeText(postUrl)
+            .then(function () {
+                message.textContent = "Link copied!";
+            })
+            .catch(function () {
+                message.textContent = "Unable to copy link.";
+            });
+    }
+</script>
+
 
 </body>
 </html>
