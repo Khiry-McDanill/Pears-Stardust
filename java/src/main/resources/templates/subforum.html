@@ -3,45 +3,71 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:replace="~{layout :: head(${subforum.title})}"></head>
 <body>
-<div th:replace="~{header :: header}"></div>
-<div class="container mt-4">
-    <h2 th:text="${subforum.title}">Subforum</h2>
-    <p th:text="${subforum.description}">Description</p>
-    <nav aria-label="breadcrumb">
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item"><span th:utext="${breadcrumb}">path</span></li>
-        </ol>
-    </nav>
-    <div th:if="${!children.isEmpty()}">
-        <h5>Subforums</h5>
-        <div class="list-group subforum-list mb-3">
-            <a th:each="child : ${children}"
-               th:href="@{/subforum(sub=${child.id})}"
-               class="list-group-item list-group-item-action"
-               th:unless="${child.hidden}">
-                <strong th:text="${child.title}">Child Forum</strong>
-                <span class="text-muted ml-2" th:text="${child.description}">desc</span>
-            </a>
+<div class="stardust-shell">
+    <div th:replace="~{header :: header}"></div>
+
+    <main class="page">
+        <div class="breadcrumb">
+            <span th:utext="${breadcrumb}">FORUM / PATH</span>
         </div>
-    </div>
-    <h5>Posts</h5>
-    <div sec:authorize="isAuthenticated()" class="mb-2">
-        <a th:href="@{/addpost(sub=${subforum.id})}" class="btn btn-primary btn-sm">Create Post</a>
-    </div>
-    <div class="list-group post-list">
-        <a th:each="post : ${posts}"
-           th:href="@{/viewpost(post=${post.id})}"
-           class="list-group-item list-group-item-action">
-            <div class="d-flex justify-content-between">
-                <strong th:text="${post.title}">Post Title</strong>
-                <small class="text-muted">
-                    <span th:text="${post.timeString}">time</span>
-                    by <span th:text="${post.user.username}">author</span>
-                </small>
+
+        <section class="section-heading">
+            <div>
+                <p class="eyebrow">SUBFORUM</p>
+                <h1 th:text="${subforum.title}">Subforum</h1>
+                <p th:text="${subforum.description}">Description</p>
             </div>
-        </a>
-    </div>
-    <div th:if="${posts.isEmpty()}" class="text-muted mt-2">No posts yet.</div>
+        </section>
+
+        <section th:if="${!children.isEmpty()}" class="blueprint-card">
+            <h3>Subforums</h3>
+            <div class="subforum-list">
+                <a th:each="child : ${children}"
+                   th:href="@{/subforum(sub=${child.id})}"
+                   class="post-link"
+                   th:unless="${child.hidden}">
+                    <span class="title" th:text="${child.title}">Child Forum</span>
+                    <span class="card-description" th:text="${child.description}">Description</span>
+                </a>
+            </div>
+        </section>
+
+        <section>
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">DISCUSSIONS</p>
+                    <h2>Posts</h2>
+                </div>
+
+                <a sec:authorize="isAuthenticated()"
+                   th:href="@{/addpost(sub=${subforum.id})}"
+                   class="blueprint-button">Create Post</a>
+            </div>
+
+            <div class="post-list">
+                <a th:each="post : ${posts}"
+                   th:href="@{/viewpost(post=${post.id})}"
+                   class="blueprint-card post-link">
+
+                    <div class="post-row">
+                        <div>
+                            <span class="title" th:text="${post.title}">Post Title</span>
+                        </div>
+
+                        <div class="post-meta">
+                            <span th:text="${post.timeString}">time</span>
+                            <br/>
+                            <span>BY <span th:text="${post.user.username}">author</span></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div th:if="${posts.isEmpty()}" class="empty-state">
+                No posts yet.
+            </div>
+        </section>
+    </main>
 </div>
 </body>
 </html>

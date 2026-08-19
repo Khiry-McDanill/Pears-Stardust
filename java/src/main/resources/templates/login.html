@@ -3,47 +3,71 @@
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head th:replace="~{layout :: head('Login / Register')}"></head>
 <body>
-<div th:replace="~{header :: header}"></div>
-<div class="container mt-4">
-    <div th:if="${!errors.isEmpty()}" class="alert alert-danger">
-        <ul class="mb-0">
-            <li th:each="err : ${errors}" th:text="${err}">Error message</li>
-        </ul>
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <h3>Login</h3>
-            <form th:action="@{/action_login}" method="post">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" class="form-control" required/>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" class="form-control" required/>
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
+<div class="stardust-shell">
+    <div th:replace="~{header :: header}"></div>
+
+    <main class="page">
+        <section class="section-heading">
+            <div>
+                <p class="eyebrow">ACCESS CONTROL</p>
+                <h1>Login / Register</h1>
+                <p>Authenticate to participate in Stardust discussions.</p>
+            </div>
+        </section>
+
+        <div th:if="${!errors.isEmpty()}" class="error-panel">
+            <ul>
+                <li th:each="err : ${errors}" th:text="${err}">Error message</li>
+            </ul>
         </div>
-        <div class="col-md-6">
-            <h3>Register</h3>
-            <form th:action="@{/action_createaccount}" method="post">
-                <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" name="username" class="form-control" required/>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" class="form-control" required/>
-                </div>
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" name="password" class="form-control" required/>
-                </div>
-                <button type="submit" class="btn btn-success">Register</button>
-            </form>
+
+        <div class="auth-grid">
+            <section class="auth-panel">
+                <p class="eyebrow">RETURNING USER</p>
+                <h2>Login</h2>
+
+                <form class="blueprint-form"
+                      th:action="@{/action_login}" method="post">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input id="login-username" type="text" name="username" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input id="login-password" type="password" name="password" required/>
+                    </div>
+
+                    <button type="submit">Login</button>
+                </form>
+            </section>
+
+            <section class="auth-panel">
+                <p class="eyebrow">NEW USER</p>
+                <h2>Register</h2>
+
+                <form class="blueprint-form"
+                      th:action="@{/action_createaccount}" method="post">
+                    <div class="form-group">
+                        <label for="register-username">Username</label>
+                        <input id="register-username" type="text" name="username" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input id="register-email" type="email" name="email" required/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input id="register-password" type="password" name="password" required/>
+                    </div>
+
+                    <button type="submit">Register</button>
+                </form>
+            </section>
         </div>
-    </div>
+    </main>
 </div>
 </body>
 </html>

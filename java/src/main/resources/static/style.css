@@ -1,21 +1,459 @@
+:root {
+    --blueprint-bg: #0b3d62;
+    --blueprint-bg-dark: #062d4a;
+    --blueprint-line: rgba(255, 255, 255, 0.72);
+    --blueprint-line-soft: rgba(255, 255, 255, 0.14);
+    --blueprint-text: #f4f8fb;
+    --blueprint-muted: rgba(244, 248, 251, 0.68);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
 body {
-    background-color: #f8f9fa;
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Courier New", Courier, monospace;
+    color: var(--blueprint-text);
+    background-color: var(--blueprint-bg);
+    background-image:
+        linear-gradient(var(--blueprint-line-soft) 1px, transparent 1px),
+        linear-gradient(90deg, var(--blueprint-line-soft) 1px, transparent 1px);
+    background-size: 25px 25px;
 }
-.forum-header {
-    background-color: #343a40;
-    color: white;
-    padding: 10px 0;
+
+a {
+    color: var(--blueprint-text);
 }
-.subforum-list .list-group-item {
-    border-left: 4px solid #007bff;
+
+a:hover {
+    color: #ffffff;
 }
-.post-list .list-group-item {
-    border-left: 4px solid #28a745;
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
 }
+
+button {
+    cursor: pointer;
+}
+
+.stardust-shell {
+    width: min(1400px, calc(100% - 40px));
+    min-height: calc(100vh - 40px);
+    margin: 20px auto;
+    border: 2px solid var(--blueprint-line);
+    padding: 0 28px 28px;
+}
+
+.site-header {
+    border-bottom: 2px solid var(--blueprint-line);
+    padding: 22px 0 18px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.brand {
+    color: var(--blueprint-text);
+    text-decoration: none;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+}
+
+.brand-subtitle {
+    margin: 5px 0 0;
+    color: var(--blueprint-muted);
+    font-size: 0.72rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.site-nav {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    font-size: 0.78rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.site-nav a,
+.site-nav button {
+    color: var(--blueprint-text);
+    text-decoration: none;
+    background: transparent;
+    border: 0;
+    padding: 4px 0;
+}
+
+.site-nav a:hover,
+.site-nav button:hover {
+    text-decoration: underline;
+}
+
+.user-label {
+    color: var(--blueprint-muted);
+}
+
+.page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 34px 0;
+}
+
+.section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--blueprint-line);
+}
+
+.section-heading h1,
+.section-heading h2,
+.section-heading h3 {
+    margin: 0;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+.section-heading p {
+    margin: 7px 0 0;
+    color: var(--blueprint-muted);
+    font-size: 0.8rem;
+    line-height: 1.5;
+}
+
+.eyebrow {
+    margin: 0 0 7px;
+    color: var(--blueprint-muted);
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.blueprint-card {
+    position: relative;
+    margin-bottom: 16px;
+    padding: 20px;
+    border: 1px solid var(--blueprint-line);
+    background: rgba(0, 40, 75, 0.32);
+}
+
+.blueprint-card::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 18px;
+    height: 18px;
+    border-top: 2px solid var(--blueprint-text);
+    border-left: 2px solid var(--blueprint-text);
+}
+
+.blueprint-card::after {
+    content: "";
+    position: absolute;
+    right: -1px;
+    bottom: -1px;
+    width: 18px;
+    height: 18px;
+    border-right: 2px solid var(--blueprint-text);
+    border-bottom: 2px solid var(--blueprint-text);
+}
+
+.blueprint-card h3,
+.blueprint-card h4 {
+    margin: 0 0 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+}
+
+.card-meta,
+.post-meta {
+    color: var(--blueprint-muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.7px;
+}
+
+.card-description {
+    margin: 8px 0 0;
+    color: var(--blueprint-muted);
+    line-height: 1.55;
+}
+
+.subforum-list,
+.post-list {
+    display: grid;
+    gap: 14px;
+}
+
+.subforum-link,
+.post-link {
+    display: block;
+    color: var(--blueprint-text);
+    text-decoration: none;
+}
+
+.subforum-link:hover,
+.post-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.subforum-link .title,
+.post-link .title {
+    display: block;
+    margin-bottom: 7px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+}
+
+.post-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.post-row .post-meta {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.blueprint-button,
+.blueprint-form button,
+.button-link {
+    display: inline-block;
+    color: var(--blueprint-text);
+    background: transparent;
+    border: 1px solid var(--blueprint-line);
+    padding: 9px 14px;
+    text-decoration: none;
+    font-size: 0.76rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.blueprint-button:hover,
+.blueprint-form button:hover,
+.button-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+    text-decoration: none;
+}
+
+.button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    margin-top: 18px;
+}
+
+.blueprint-form {
+    max-width: 720px;
+    padding: 22px;
+    border: 1px solid var(--blueprint-line);
+    background: rgba(0, 40, 75, 0.35);
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    color: var(--blueprint-text);
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.blueprint-form input,
+.blueprint-form textarea,
+.blueprint-form select {
+    display: block;
+    width: 100%;
+    padding: 10px 11px;
+    color: var(--blueprint-text);
+    background: rgba(0, 20, 40, 0.28);
+    border: 1px solid var(--blueprint-line);
+    border-radius: 0;
+}
+
+.blueprint-form input:focus,
+.blueprint-form textarea:focus,
+.blueprint-form select:focus {
+    outline: none;
+    border-color: #fff;
+    box-shadow: 0 0 0 1px #fff;
+}
+
+.blueprint-form textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.blueprint-form select option {
+    color: #111;
+    background: #fff;
+}
+
+.error-panel {
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border: 1px solid var(--blueprint-line);
+    background: rgba(120, 20, 20, 0.28);
+}
+
+.error-panel ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.breadcrumb {
+    margin-bottom: 24px;
+    color: var(--blueprint-muted);
+    font-size: 0.72rem;
+    line-height: 1.6;
+}
+
+.breadcrumb a {
+    color: var(--blueprint-text);
+}
+
+.post-header {
+    margin-bottom: 24px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--blueprint-line);
+}
+
+.post-header h1 {
+    margin: 0 0 10px;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.post-content {
+    margin-bottom: 30px;
+    padding: 22px;
+    border: 1px solid var(--blueprint-line);
+    background: rgba(0, 40, 75, 0.32);
+    line-height: 1.7;
+    white-space: pre-wrap;
+}
+
+.comments-heading {
+    margin: 0 0 16px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
 .comment-block {
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    padding: 16px;
+    border: 1px solid var(--blueprint-line-soft);
+    border-left: 3px solid var(--blueprint-line);
+    background: rgba(0, 40, 75, 0.24);
+}
+
+.comment-content {
+    margin: 0 0 10px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.empty-state {
+    color: var(--blueprint-muted);
+    padding: 18px 0;
+    font-style: italic;
+}
+
+.auth-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.auth-panel {
+    padding: 22px;
+    border: 1px solid var(--blueprint-line);
+    background: rgba(0, 40, 75, 0.32);
+}
+
+.auth-panel h2 {
+    margin-top: 0;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.site-footer {
+    margin-top: 36px;
+    padding-top: 14px;
+    border-top: 2px solid var(--blueprint-line);
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    color: var(--blueprint-muted);
+    font-size: 0.68rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+@media (max-width: 760px) {
+    .stardust-shell {
+        width: calc(100% - 20px);
+        margin: 10px auto;
+        min-height: calc(100vh - 20px);
+        padding: 0 16px 20px;
+    }
+
+    .header-content,
+    .section-heading,
+    .post-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .site-nav {
+        justify-content: flex-start;
+    }
+
+    .post-row .post-meta {
+        text-align: left;
+        white-space: normal;
+    }
+
+    .auth-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .page {
+        padding: 24px 0;
+    }
+
+    .site-footer {
+        flex-direction: column;
+    }
 }
