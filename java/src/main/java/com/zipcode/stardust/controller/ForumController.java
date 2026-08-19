@@ -200,7 +200,24 @@ public class ForumController {
 
         return "redirect:/loginform";
     }
+    @GetMapping("/profile")
+public String profile(
+        Model model,
+        Authentication auth) {
 
+    addCommonAttributes(model, auth);
+
+    if (auth == null || !auth.isAuthenticated()
+            || "anonymousUser".equals(auth.getPrincipal())) {
+        return "redirect:/loginform";
+    }
+
+    User user = getCurrentUser(auth);
+
+    model.addAttribute("profileUser", user);
+
+    return "profile";
+    }
     @GetMapping("/addpost")
     public String addPostForm(
             @RequestParam Long sub,
