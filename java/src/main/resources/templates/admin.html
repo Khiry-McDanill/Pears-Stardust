@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{layout :: head('Admin Dashboard')}"></head>
+
+<body>
+<div class="stardust-shell">
+
+    <div th:replace="~{header :: header}"></div>
+
+    <main class="page">
+
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">ADMINISTRATION</p>
+                <h1>Admin Dashboard</h1>
+                <p>Manage Stardust users and permissions.</p>
+            </div>
+        </div>
+
+        <section class="blueprint-form">
+
+            <h2>Users</h2>
+
+            <div th:if="${users.isEmpty()}" class="empty-state">
+                No users found.
+            </div>
+
+            <div th:each="user : ${users}" class="comment-block">
+
+                <div>
+                    <strong th:text="${user.username}">
+                        Username
+                    </strong>
+
+                    <p th:text="${user.email}">
+                        user@email.com
+                    </p>
+
+                    <p>
+                        Status:
+                        <strong th:text="${user.admin ? 'ADMIN' : 'USER'}">
+                            USER
+                        </strong>
+                    </p>
+                </div>
+
+                <div class="button-row">
+
+                    <form th:if="${!user.admin}"
+                          th:action="@{/admin/promote}"
+                          method="post">
+
+                        <input type="hidden"
+                               name="userId"
+                               th:value="${user.id}" />
+
+                        <button type="submit">
+                            Promote to Admin
+                        </button>
+                    </form>
+
+                    <form th:if="${user.admin}"
+                          th:action="@{/admin/demote}"
+                          method="post">
+
+                        <input type="hidden"
+                               name="userId"
+                               th:value="${user.id}" />
+
+                        <button type="submit">
+                            Remove Admin
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+</div>
+</body>
+</html>
