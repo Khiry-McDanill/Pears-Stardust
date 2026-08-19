@@ -13,7 +13,9 @@
     <main class="page">
 
         <div class="breadcrumb">
-            <span th:utext="${breadcrumb}">FORUM / PATH</span>
+            <span th:utext="${breadcrumb}">
+                FORUM / PATH
+            </span>
         </div>
 
         <article>
@@ -31,16 +33,17 @@
                 <div class="post-meta">
 
                     POSTED BY
+
                     <strong th:text="${post.user.username}">
                         author
                     </strong>
 
                     //
+
                     <span th:text="${post.timeString}">
                         time
                     </span>
 
-                    <!-- Pinned indicator -->
                     <span th:if="${post.pinned}">
                         // 📌 PINNED
                     </span>
@@ -133,6 +136,37 @@
 
             </div>
 
+
+            <!-- ========================= -->
+            <!-- BOOKMARK FEATURE -->
+            <!-- ========================= -->
+
+            <div sec:authorize="isAuthenticated()"
+                 class="button-row"
+                 style="margin-top: 20px;">
+
+                <form th:action="@{/bookmark(post=${post.id})}"
+                      method="post">
+
+                    <button type="submit"
+                            class="blueprint-button">
+                        🔖 Bookmark
+                    </button>
+
+                </form>
+
+                <form th:action="@{/bookmark/remove(post=${post.id})}"
+                      method="post">
+
+                    <button type="submit"
+                            class="blueprint-button">
+                        Remove Bookmark
+                    </button>
+
+                </form>
+
+            </div>
+
         </article>
 
 
@@ -163,6 +197,7 @@
                 <small class="post-meta">
 
                     BY
+
                     <strong th:text="${comment.user.username}">
                         author
                     </strong>
@@ -235,6 +270,7 @@
             <a th:href="@{/loginform}">
                 Login
             </a>
+
             to post a comment.
 
         </div>
