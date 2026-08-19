@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: head('Bookmarks')}"></head>
+
+<body>
+
+<div class="stardust-shell">
+
+    <div th:replace="~{header :: header}"></div>
+
+    <main class="page">
+
+        <section class="section-heading">
+
+            <div>
+                <p class="eyebrow">
+                    STARDUST // SAVED
+                </p>
+
+                <h1>
+                    Bookmarks
+                </h1>
+
+                <p>
+                    Posts you have saved.
+                </p>
+            </div>
+
+        </section>
+
+
+        <section class="post-list">
+
+            <a th:each="bookmark : ${bookmarks}"
+               th:href="@{/viewpost(post=${bookmark.post.id})}"
+               class="blueprint-card post-link">
+
+                <div class="post-row">
+
+                    <div>
+
+                        <span
+                            class="title"
+                            th:text="${bookmark.post.title}">
+                            Post Title
+                        </span>
+
+                    </div>
+
+                    <div class="post-meta">
+
+                        BY
+                        <span
+                            th:text="${bookmark.post.user.username}">
+                            username
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+        </section>
+
+
+        <div th:if="${bookmarks.isEmpty()}"
+             class="empty-state">
+
+            You haven't bookmarked any posts yet.
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>

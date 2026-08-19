@@ -9,7 +9,6 @@
         <div class="navbar-nav flex-row">
             <a class="nav-link text-white mr-3" th:href="@{/}">Subforum Index</a>
 
-            </a>
                 <a class="nav-link text-white mr-3"
                 th:href="@{/search}">
                     Search
@@ -18,6 +17,16 @@
                 <a class="nav-link text-white mr-3 d-inline"
                    th:href="@{/messages}">Messages</a>
 
+                   <a sec:authorize="isAuthenticated()"
+                        th:href="@{/bookmarks}">
+                            Bookmarks
+                        </a>
+                    
+                        <a sec:authorize="isAuthenticated()"
+                            th:href="@{/notifications}">
+                                Notifications
+                            </a>
+                            
                 <span class="text-white mr-2"
                       th:text="'Hello, ' + ${currentUser}">Hello, user</span>
 

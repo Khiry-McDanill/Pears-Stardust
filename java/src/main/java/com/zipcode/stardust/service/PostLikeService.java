@@ -14,6 +14,9 @@ public class PostLikeService {
     @Autowired
     private PostLikeRepository postLikeRepository;
 
+    @Autowired
+    private NotificationService notificationService;
+
     @Transactional
     public boolean toggleLike(User user, Post post) {
 
@@ -24,6 +27,14 @@ public class PostLikeService {
 
         PostLike postLike = new PostLike(user, post);
         postLikeRepository.save(postLike);
+
+        if (!post.getUser().equals(user)) {
+            notificationService.createNotification(
+                    post.getUser(),
+                    user,
+                    user.getUsername() + " liked your post."
+            );
+        }
 
         return true;
     }
