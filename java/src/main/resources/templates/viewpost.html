@@ -35,7 +35,29 @@
                 </form>
             </div>
         </article>
+            <div sec:authorize="isAuthenticated()" class="button-row">
 
+                <form th:action="@{/bookmark(post=${post.id})}"
+                    method="post">
+
+                    <button type="submit"
+                            class="blueprint-button">
+                        🔖 Bookmark
+                    </button>
+
+                </form>
+
+                <form th:action="@{/bookmark/remove(post=${post.id})}"
+                    method="post">
+
+                    <button type="submit"
+                            class="blueprint-button">
+                        Remove Bookmark
+                    </button>
+
+                </form>
+
+            </div>
         <section>
             <h2 class="comments-heading">
                 Comments (<span th:text="${#lists.size(comments)}">0</span>)

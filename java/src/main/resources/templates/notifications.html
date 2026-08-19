@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{layout :: head('Notifications')}"></head>
+
+<body>
+
+<div class="stardust-shell">
+
+    <div th:replace="~{header :: header}"></div>
+
+    <main class="page">
+
+        <section class="section-heading">
+
+            <div>
+
+                <p class="eyebrow">
+                    STARDUST // ALERTS
+                </p>
+
+                <h1>
+                    Notifications
+                </h1>
+
+                <p>
+                    Activity related to your account.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="post-list">
+
+            <div th:each="notification : ${notifications}"
+                 class="blueprint-card">
+
+                <div class="post-row">
+
+                    <div>
+
+                        <span
+                            class="title"
+                            th:text="${notification.message}">
+                            Notification message
+                        </span>
+
+                        <div class="post-meta">
+
+                            <span
+                                th:text="${notification.createdAt}">
+                                date
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <span
+                            th:if="${!notification.read}"
+                            class="post-meta">
+                            UNREAD
+                        </span>
+
+                        <span
+                            th:if="${notification.read}"
+                            class="post-meta">
+                            READ
+                        </span>
+
+                        <form
+                            th:if="${!notification.read}"
+                            th:action="@{/notifications/{id}/read(id=${notification.id})}"
+                            method="post">
+
+                            <button
+                                type="submit"
+                                class="blueprint-button">
+
+                                Mark Read
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <div
+            th:if="${notifications.isEmpty()}"
+            class="empty-state">
+
+            You're all caught up.
+
+        </div>
+
+    </main>
+
+</div>
+
+</body>
+</html>
