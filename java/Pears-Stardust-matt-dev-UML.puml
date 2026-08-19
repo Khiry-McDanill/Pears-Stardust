@@ -1,0 +1,162 @@
+@startuml
+title Pears-Stardust UML - matt-dev
+
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+left to right direction
+
+package "model" {
+
+  class User {
+    - id : Long
+    - username : String
+    - passwordHash : String
+    - email : String
+    - admin : boolean
+    - posts : List<Post>
+    - comments : List<Comment>
+    + checkPassword(rawPassword, encoder) : boolean
+    + getAuthorities() : Collection<GrantedAuthority>
+  }
+
+  class Subforum {
+    - id : Long
+    - title : String
+    - description : String
+    - parent : Subforum
+    - subforums : List<Subforum>
+    - posts : List<Post>
+    - hidden : boolean
+  }
+
+  class Post {
+    - id : Long
+    - title : String
+    - content : String
+    - user : User
+    - subforum : Subforum
+    - postdate : LocalDateTime
+    - comments : List<Comment>
+    + getTimeString() : String
+  }
+
+  class Comment {
+    - id : Long
+    - content : String
+    - postdate : LocalDateTime
+    - user : User
+    - post : Post
+    + getTimeString() : String
+  }
+
+  class PostLike {
+    - id : Long
+    - user : User
+    - post : Post
+  }
+
+  class DirectMessage {
+    - id : Long
+    - sender : User
+    - recipient : User
+    - content : String
+    - sentAt : LocalDateTime
+  }
+
+  class Bookmark {
+  }
+}
+
+package "repository" {
+  interface UserRepository
+  interface SubforumRepository
+  interface PostRepository
+  interface CommentRepository
+  interface PostLikeRepository
+  interface DirectMessageRepository
+  interface BookmarkRepository
+  interface AdminRepository
+}
+
+package "controller" {
+  class ForumController
+  class SearchController
+  class MessageController
+  class BookmarkController
+}
+
+package "service" {
+  class UserService
+}
+
+ 
+
+' ----------------------------
+' Domain relationships
+' ----------------------------
+
+User "1" <-- "0..*" Post : author
+User "1" <-- "0..*" Comment : author
+
+Subforum "0..1" <-- "0..*" Subforum : parent
+Subforum "1" <-- "0..*" Post : contains
+
+Post "1" <-- "0..*" Comment : comments
+
+User "1" <-- "0..*" PostLike : user
+Post "1" <-- "0..*" PostLike : post
+
+User "1" <-- "0..*" DirectMessage : sender
+User "1" <-- "0..*" DirectMessage : recipient
+
+' ----------------------------
+' Repository dependencies
+' ----------------------------
+
+UserRepository ..> User
+SubforumRepository ..> Subforum
+PostRepository ..> Post
+CommentRepository ..> Comment
+PostLikeRepository ..> PostLike
+DirectMessageRepository ..> DirectMessage
+BookmarkRepository ..> Bookmark
+AdminRepository ..> ForumController
+
+' ----------------------------
+' Controller dependencies
+' ----------------------------
+
+ForumController ..> UserRepository
+ForumController ..> SubforumRepository
+ForumController ..> PostRepository
+ForumController ..> CommentRepository
+ForumController ..> PostLikeRepository
+
+SearchController ..> PostRepository
+SearchController ..> SubforumRepository
+SearchController ..> UserRepository
+
+MessageController ..> DirectMessageRepository
+MessageController ..> UserRepository
+MessageController ..> DirectMessage
+MessageController ..> User
+
+BookmarkController ..> BookmarkRepository
+BookmarkController ..> Bookmark
+
+UserService ..> UserRepository
+UserService ..> User
+
+note right of Bookmark
+Bookmark is currently an empty class
+on matt-dev, so it is shown as
+a placeholder in this UML.
+end note
+
+note bottom of DirectMessage
+Direct messaging is modeled as:
+User -> DirectMessage <- User
+with separate sender and recipient roles.
+end note
+
+@enduml

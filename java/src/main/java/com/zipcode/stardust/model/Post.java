@@ -31,6 +31,9 @@ public class Post {
     @Column(nullable = false, length = 5000)
     private String content;
 
+    @Column(length = 1000)
+    private String mediaUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -48,12 +51,14 @@ public class Post {
     private static final int DAYS_PER_MONTH = 30;
     private static final long CACHE_TTL_SECONDS = 30;
 
-    private record TimeCache(String value, LocalDateTime computedAt) {}
+    private record TimeCache(String value, LocalDateTime computedAt) {
+    }
 
     @Transient
     private volatile TimeCache timeCache;
 
-    public Post() {}
+    public Post() {
+    }
 
     public Post(String title, String content, User user, Subforum subforum) {
         this.title = title;
@@ -90,18 +95,103 @@ public class Post {
         return result;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-    public String getContent() { return content; }
-    public void setContent(String content) { this.content = content; }
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-    public Subforum getSubforum() { return subforum; }
-    public void setSubforum(Subforum subforum) { this.subforum = subforum; }
-    public LocalDateTime getPostdate() { return postdate; }
-    public void setPostdate(LocalDateTime postdate) { this.postdate = postdate; }
-    public List<Comment> getComments() { return comments; }
-    public void setComments(List<Comment> comments) { this.comments = comments; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Subforum getSubforum() {
+        return subforum;
+    }
+
+    public void setSubforum(Subforum subforum) {
+        this.subforum = subforum;
+    }
+
+    public LocalDateTime getPostdate() {
+        return postdate;
+    }
+
+    public void setPostdate(LocalDateTime postdate) {
+        this.postdate = postdate;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public String getMediaUrl() {
+        return mediaUrl;
+    }
+
+    public void setMediaUrl(String mediaUrl) {
+        this.mediaUrl = mediaUrl;
+    }
+
+    @Transient
+    public String getEmbedUrl() {
+
+        if (mediaUrl == null || mediaUrl.isBlank()) {
+            return null;
+        }
+
+        if (mediaUrl.contains("youtube.com/watch?v=")) {
+            String videoId = mediaUrl.substring(
+                    mediaUrl.indexOf("v=") + 2);
+
+            if (videoId.contains("&")) {
+                videoId = videoId.substring(
+                        0,
+                        videoId.indexOf("&"));
+            }
+
+            return "https://www.youtube.com/embed/" + videoId;
+        }
+
+        if (mediaUrl.contains("youtu.be/")) {
+            String videoId = mediaUrl.substring(
+                    mediaUrl.indexOf("youtu.be/") + 9);
+
+            if (videoId.contains("?")) {
+                videoId = videoId.substring(
+                        0,
+                        videoId.indexOf("?"));
+            }
+
+            return "https://www.youtube.com/embed/" + videoId;
+        }
+
+        return mediaUrl;
+    }
 }
