@@ -112,6 +112,93 @@ button {
     color: var(--blueprint-muted);
 }
 
+.brand-block {
+    flex: 0 0 auto;
+}
+
+.header-search {
+    display: flex;
+    align-items: stretch;
+    flex: 1 1 420px;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.header-search input {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 13px;
+    color: var(--blueprint-text);
+    background: rgba(0, 20, 40, 0.28);
+    border: 1px solid var(--blueprint-line);
+    border-right: 0;
+    border-radius: 4px 0 0 4px;
+}
+
+.header-search input::placeholder {
+    color: var(--blueprint-muted);
+}
+
+.header-search input:focus {
+    outline: none;
+    border-color: #fff;
+    box-shadow: 0 0 0 1px #fff;
+}
+
+.header-search button {
+    padding: 0 16px;
+    color: var(--blueprint-text);
+    background: transparent;
+    border: 1px solid var(--blueprint-line);
+    border-radius: 0 4px 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.header-search button:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.site-nav {
+    flex: 0 0 auto;
+}
+
+.site-nav a {
+    white-space: nowrap;
+}
+
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 18px;
+    border-left: 1px solid var(--blueprint-line);
+    white-space: nowrap;
+}
+
+.user-area a {
+    color: var(--blueprint-text);
+    text-decoration: none;
+}
+
+.user-area form {
+    margin: 0;
+}
+
+.logout-button {
+    color: var(--blueprint-text);
+    background: transparent;
+    border: 1px solid var(--blueprint-line);
+    padding: 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.72rem;
+}
+
+.logout-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
 .page {
     max-width: 1180px;
     margin: 0 auto;
@@ -455,5 +542,28 @@ button {
 
     .site-footer {
         flex-direction: column;
+    }
+
+        .header-content {
+        align-items: stretch;
+    }
+
+    .header-search {
+        width: 100%;
+        max-width: none;
+        margin: 8px 0;
+    }
+
+    .site-nav {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .user-area {
+        width: 100%;
+        padding-left: 0;
+        padding-top: 12px;
+        border-left: 0;
+        border-top: 1px solid var(--blueprint-line);
     }
 }
