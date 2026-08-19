@@ -30,16 +30,22 @@ public class ForumController {
 
     @Autowired
     private SubforumRepository subforumRepository;
+
     @Autowired
     private PostRepository postRepository;
+
     @Autowired
     private CommentRepository commentRepository;
+
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private ForumService forumService;
+
     @Autowired
     private PostLikeService postLikeService;
 
@@ -50,8 +56,8 @@ public class ForumController {
     private String siteDescription;
 
     private User getCurrentUser(Authentication auth) {
-        if (auth == null || !auth.isAuthenticated() ||
-                "anonymousUser".equals(auth.getPrincipal())) {
+        if (auth == null || !auth.isAuthenticated()
+                || "anonymousUser".equals(auth.getPrincipal())) {
             return null;
         }
 
@@ -78,7 +84,8 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        List<Subforum> topLevel = subforumRepository.findByParentIsNull();
+        List<Subforum> topLevel =
+                subforumRepository.findByParentIsNull();
 
         model.addAttribute("subforums", topLevel);
 
@@ -93,7 +100,8 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        Optional<Subforum> opt = subforumRepository.findById(sub);
+        Optional<Subforum> opt =
+                subforumRepository.findById(sub);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -101,11 +109,14 @@ public class ForumController {
 
         Subforum sf = opt.get();
 
-        List<Post> posts = postRepository.findBySubforumOrderByPostdateDesc(sf);
+        List<Post> posts =
+                postRepository.findBySubforumOrderByPostdateDesc(sf);
 
-        List<Subforum> children = subforumRepository.findByParent(sf);
+        List<Subforum> children =
+                subforumRepository.findByParent(sf);
 
-        String breadcrumb = forumService.generateLinkPath(sub);
+        String breadcrumb =
+                forumService.generateLinkPath(sub);
 
         model.addAttribute("subforum", sf);
         model.addAttribute("posts", posts);
@@ -152,13 +163,15 @@ public class ForumController {
         if (!forumService.validUsername(username)) {
             errors.add(
                     "Username must be 4-40 alphanumeric characters " +
-                            "(also allowed: !@#%&).");
+                    "(also allowed: !@#%&)."
+            );
         }
 
         if (!forumService.validPassword(password)) {
             errors.add(
                     "Password must be 6-40 alphanumeric characters " +
-                            "(also allowed: !@#%&).");
+                    "(also allowed: !@#%&)."
+            );
         }
 
         if (forumService.usernameTaken(username)) {
@@ -180,7 +193,8 @@ public class ForumController {
                 email,
                 username,
                 password,
-                passwordEncoder);
+                passwordEncoder
+        );
 
         userRepository.save(user);
 
@@ -195,7 +209,8 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        Optional<Subforum> opt = subforumRepository.findById(sub);
+        Optional<Subforum> opt =
+                subforumRepository.findById(sub);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -226,15 +241,18 @@ public class ForumController {
 
         if (!forumService.validTitle(title)) {
             errors.add(
-                    "Title must be between 5 and 139 characters.");
+                    "Title must be between 5 and 139 characters."
+            );
         }
 
         if (!forumService.validContent(content)) {
             errors.add(
-                    "Content must be between 11 and 4999 characters.");
+                    "Content must be between 11 and 4999 characters."
+            );
         }
 
-        Optional<Subforum> opt = subforumRepository.findById(sub);
+        Optional<Subforum> opt =
+                subforumRepository.findById(sub);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -254,7 +272,8 @@ public class ForumController {
                 title,
                 content,
                 user,
-                opt.get());
+                opt.get()
+        );
 
         if (mediaUrl != null && !mediaUrl.isBlank()) {
             post.setMediaUrl(mediaUrl.trim());
@@ -273,7 +292,8 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        Optional<Post> opt = postRepository.findById(post);
+        Optional<Post> opt =
+                postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -281,30 +301,208 @@ public class ForumController {
 
         Post p = opt.get();
 
-        List<Comment> comments = commentRepository.findByPostOrderByPostdateAsc(p);
+        List<Comment> comments =
+                commentRepository.findByPostOrderByPostdateAsc(p);
 
-        String breadcrumb = forumService.generateLinkPath(
-                p.getSubforum().getId());
+        String breadcrumb =
+                forumService.generateLinkPath(
+                        p.getSubforum().getId()
+                );
 
-        // Existing post information
         model.addAttribute("post", p);
         model.addAttribute("comments", comments);
         model.addAttribute("breadcrumb", breadcrumb);
         model.addAttribute("errors", new ArrayList<>());
 
-        // Like information
         User currentUser = getCurrentUser(auth);
 
         model.addAttribute(
                 "likeCount",
-                postLikeService.getLikeCount(p));
+                postLikeService.getLikeCount(p)
+        );
 
         model.addAttribute(
                 "hasLiked",
-                postLikeService.hasLiked(currentUser, p));
+                postLikeService.hasLiked(currentUser, p)
+        );
 
         return "viewpost";
     }
+
+    // =========================
+    // EDIT POST
+    // =========================
+
+    @GetMapping("/editpost")
+    public String editPostForm(
+            @RequestParam Long post,
+            Model model,
+            Authentication auth) {
+
+        addCommonAttributes(model, auth);
+
+        if (auth == null || !auth.isAuthenticated()) {
+            return "redirect:/loginform";
+        }
+
+        Optional<Post> opt =
+                postRepository.findById(post);
+
+        if (opt.isEmpty()) {
+            return "redirect:/";
+        }
+
+        Post p = opt.get();
+        User currentUser = getCurrentUser(auth);
+
+        if (currentUser == null ||
+                !currentUser.getId().equals(p.getUser().getId())) {
+
+            return "redirect:/viewpost?post=" + post;
+        }
+
+        model.addAttribute("post", p);
+        model.addAttribute("errors", new ArrayList<>());
+
+        return "editpost";
+    }
+
+    @PostMapping("/action_editpost")
+    public String editPost(
+            @RequestParam Long post,
+            @RequestParam String title,
+            @RequestParam String content,
+            Model model,
+            Authentication auth) {
+
+        addCommonAttributes(model, auth);
+
+        if (auth == null || !auth.isAuthenticated()) {
+            return "redirect:/loginform";
+        }
+
+        Optional<Post> opt =
+                postRepository.findById(post);
+
+        if (opt.isEmpty()) {
+            return "redirect:/";
+        }
+
+        Post p = opt.get();
+        User currentUser = getCurrentUser(auth);
+
+        if (currentUser == null ||
+                !currentUser.getId().equals(p.getUser().getId())) {
+
+            return "redirect:/viewpost?post=" + post;
+        }
+
+        List<String> errors = new ArrayList<>();
+
+        if (!forumService.validTitle(title)) {
+            errors.add(
+                    "Title must be between 5 and 139 characters."
+            );
+        }
+
+        if (!forumService.validContent(content)) {
+            errors.add(
+                    "Content must be between 11 and 4999 characters."
+            );
+        }
+
+        if (!errors.isEmpty()) {
+
+            model.addAttribute("post", p);
+            model.addAttribute("errors", errors);
+
+            return "editpost";
+        }
+
+        p.setTitle(title);
+        p.setContent(content);
+
+        postRepository.save(p);
+
+        return "redirect:/viewpost?post=" + post;
+    }
+
+    // =========================
+    // DELETE POST
+    // =========================
+
+    @PostMapping("/action_deletepost")
+    public String deletePost(
+            @RequestParam Long post,
+            Authentication auth) {
+
+        if (auth == null || !auth.isAuthenticated()) {
+            return "redirect:/loginform";
+        }
+
+        Optional<Post> opt =
+                postRepository.findById(post);
+
+        if (opt.isEmpty()) {
+            return "redirect:/";
+        }
+
+        Post p = opt.get();
+        User currentUser = getCurrentUser(auth);
+
+        if (currentUser == null ||
+                !currentUser.getId().equals(p.getUser().getId())) {
+
+            return "redirect:/viewpost?post=" + post;
+        }
+
+        Long subforumId =
+                p.getSubforum().getId();
+
+        postRepository.delete(p);
+
+        return "redirect:/subforum?sub=" + subforumId;
+    }
+
+    // =========================
+    // PIN / UNPIN POST
+    // =========================
+
+    @PostMapping("/action_pinpost")
+    public String togglePin(
+            @RequestParam Long post,
+            Authentication auth) {
+
+        if (auth == null || !auth.isAuthenticated()) {
+            return "redirect:/loginform";
+        }
+
+        Optional<Post> opt =
+                postRepository.findById(post);
+
+        if (opt.isEmpty()) {
+            return "redirect:/";
+        }
+
+        Post p = opt.get();
+        User currentUser = getCurrentUser(auth);
+
+        if (currentUser == null ||
+                !currentUser.isAdmin()) {
+
+            return "redirect:/viewpost?post=" + post;
+        }
+
+        p.setPinned(!p.isPinned());
+
+        postRepository.save(p);
+
+        return "redirect:/viewpost?post=" + post;
+    }
+
+    // =========================
+    // LIKE / UNLIKE
+    // =========================
 
     @PostMapping("/action_like")
     public String toggleLike(
@@ -315,7 +513,8 @@ public class ForumController {
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt = postRepository.findById(post);
+        Optional<Post> opt =
+                postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -325,10 +524,15 @@ public class ForumController {
 
         postLikeService.toggleLike(
                 user,
-                opt.get());
+                opt.get()
+        );
 
         return "redirect:/viewpost?post=" + post;
     }
+
+    // =========================
+    // COMMENTS
+    // =========================
 
     @PostMapping("/action_comment")
     public String addComment(
@@ -340,7 +544,8 @@ public class ForumController {
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt = postRepository.findById(post);
+        Optional<Post> opt =
+                postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -351,7 +556,8 @@ public class ForumController {
         Comment comment = new Comment(
                 content,
                 user,
-                opt.get());
+                opt.get()
+        );
 
         commentRepository.save(comment);
 
