@@ -1,9 +1,8 @@
 package com.zipcode.stardust.controller;
 
-import com.zipcode.stardust.model.*;
-import com.zipcode.stardust.repository.*;
-import com.zipcode.stardust.service.ForumService;
-import com.zipcode.stardust.service.PostLikeService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,22 +10,44 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.zipcode.stardust.model.Comment;
+import com.zipcode.stardust.model.Post;
+import com.zipcode.stardust.model.Subforum;
+import com.zipcode.stardust.model.User;
+import com.zipcode.stardust.repository.CommentRepository;
+import com.zipcode.stardust.repository.PostRepository;
+import com.zipcode.stardust.repository.SubforumRepository;
+import com.zipcode.stardust.repository.UserRepository;
+import com.zipcode.stardust.service.ForumService;
+import com.zipcode.stardust.service.PostLikeService;
 
 @Controller
 public class ForumController {
 
-    @Autowired private SubforumRepository subforumRepository;
-    @Autowired private PostRepository postRepository;
-    @Autowired private CommentRepository commentRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private PasswordEncoder passwordEncoder;
-    @Autowired private ForumService forumService;
-    @Autowired private PostLikeService postLikeService;
+    @Autowired
+    private SubforumRepository subforumRepository;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ForumService forumService;
+
+    @Autowired
+    private PostLikeService postLikeService;
 
     @Value("${site.name:Schooner}")
     private String siteName;
@@ -35,8 +56,8 @@ public class ForumController {
     private String siteDescription;
 
     private User getCurrentUser(Authentication auth) {
-        if (auth == null || !auth.isAuthenticated() ||
-                "anonymousUser".equals(auth.getPrincipal())) {
+        if (auth == null || !auth.isAuthenticated()
+                || "anonymousUser".equals(auth.getPrincipal())) {
             return null;
         }
 
@@ -168,13 +189,12 @@ public class ForumController {
             return "login";
         }
 
-        User user =
-                new User(
-                        email,
-                        username,
-                        password,
-                        passwordEncoder
-                );
+        User user = new User(
+                email,
+                username,
+                password,
+                passwordEncoder
+        );
 
         userRepository.save(user);
 
@@ -207,6 +227,7 @@ public class ForumController {
             @RequestParam Long sub,
             @RequestParam String title,
             @RequestParam String content,
+            @RequestParam(required = false) String mediaUrl,
             Model model,
             Authentication auth) {
 
@@ -247,13 +268,16 @@ public class ForumController {
 
         User user = getCurrentUser(auth);
 
-        Post post =
-                new Post(
-                        title,
-                        content,
-                        user,
-                        opt.get()
-                );
+        Post post = new Post(
+                title,
+                content,
+                user,
+                opt.get()
+        );
+
+        if (mediaUrl != null && !mediaUrl.isBlank()) {
+            post.setMediaUrl(mediaUrl.trim());
+        }
 
         postRepository.save(post);
 
@@ -529,12 +553,11 @@ public class ForumController {
 
         User user = getCurrentUser(auth);
 
-        Comment comment =
-                new Comment(
-                        content,
-                        user,
-                        opt.get()
-                );
+        Comment comment = new Comment(
+                content,
+                user,
+                opt.get()
+        );
 
         commentRepository.save(comment);
 
