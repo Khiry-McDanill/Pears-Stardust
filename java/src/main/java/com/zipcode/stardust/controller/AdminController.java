@@ -1,6 +1,7 @@
 package com.zipcode.stardust.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,12 +50,21 @@ public class AdminController {
     }
 
     @PostMapping("/demote")
-    public String demoteUser(@RequestParam Long userId) {
+    public String demoteUser(
+            @RequestParam Long userId,
+            Authentication auth) {
+
+        User currentUser = userRepository
+                .findByUsername(auth.getName())
+                .orElseThrow();
+
+        if (currentUser.getId().equals(userId)) {
+            return "redirect:/admin";
+        }
 
         User user = userRepository.findById(userId).orElseThrow();
 
         user.setAdmin(false);
-
         userRepository.save(user);
 
         return "redirect:/admin";
