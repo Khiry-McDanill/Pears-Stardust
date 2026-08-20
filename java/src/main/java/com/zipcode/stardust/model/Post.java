@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,17 +43,17 @@ public class Post {
     @JoinColumn(name = "subforum_id")
     private Subforum subforum;
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostLike> likes = new ArrayList<>();
+
     @Column(nullable = false)
     private LocalDateTime postdate;
 
-    @Column(nullable = false)
-    private boolean pinned = false;
-
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @Column(nullable = false)
-    private boolean locked = false;
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Bookmark> bookmarks = new ArrayList<>();
 
     private static final int DAYS_PER_MONTH = 30;
     private static final long CACHE_TTL_SECONDS = 30;
@@ -62,6 +63,9 @@ public class Post {
 
     @Transient
     private volatile TimeCache timeCache;
+
+    @Column(nullable = false)
+    private boolean pinned = false;
 
     public Post() {
     }
@@ -77,20 +81,15 @@ public class Post {
     public String getTimeString() {
         LocalDateTime now = LocalDateTime.now();
         TimeCache cache = this.timeCache;
-
-        if (cache != null &&
-                Duration.between(cache.computedAt(), now).getSeconds() < CACHE_TTL_SECONDS) {
+        if (cache != null && Duration.between(cache.computedAt(), now).getSeconds() < CACHE_TTL_SECONDS) {
             return cache.value();
         }
-
         Duration d = Duration.between(postdate, now);
         String result;
-
         long months = d.toDays() / DAYS_PER_MONTH;
         long days = d.toDays();
         long hours = d.toHours();
         long minutes = d.toMinutes();
-
         if (months > 0) {
             result = months + " month" + (months == 1 ? "" : "s") + " ago";
         } else if (days > 0) {
@@ -102,9 +101,7 @@ public class Post {
         } else {
             result = "Just a moment ago!";
         }
-
         this.timeCache = new TimeCache(result, now);
-
         return result;
     }
 
@@ -130,6 +127,38 @@ public class Post {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Subforum getSubforum() {
+        return subforum;
+    }
+
+    public void setSubforum(Subforum subforum) {
+        this.subforum = subforum;
+    }
+
+    public LocalDateTime getPostdate() {
+        return postdate;
+    }
+
+    public void setPostdate(LocalDateTime postdate) {
+        this.postdate = postdate;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
     public String getMediaUrl() {
@@ -176,28 +205,20 @@ public class Post {
         return mediaUrl;
     }
 
-    public User getUser() {
-        return user;
+    public List<PostLike> getLikes() {
+        return likes;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setLikes(List<PostLike> likes) {
+        this.likes = likes;
     }
 
-    public Subforum getSubforum() {
-        return subforum;
+    public List<Bookmark> getBookmarks() {
+        return bookmarks;
     }
 
-    public void setSubforum(Subforum subforum) {
-        this.subforum = subforum;
-    }
-
-    public LocalDateTime getPostdate() {
-        return postdate;
-    }
-
-    public void setPostdate(LocalDateTime postdate) {
-        this.postdate = postdate;
+    public void setBookmarks(List<Bookmark> bookmarks) {
+        this.bookmarks = bookmarks;
     }
 
     public boolean isPinned() {
@@ -206,21 +227,5 @@ public class Post {
 
     public void setPinned(boolean pinned) {
         this.pinned = pinned;
-    }
-
-    public boolean isLocked() {
-        return locked;
-    }
-
-    public void setLocked(boolean locked) {
-        this.locked = locked;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 }
