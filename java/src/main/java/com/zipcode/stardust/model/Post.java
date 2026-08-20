@@ -49,8 +49,18 @@ public class Post {
     @Column(nullable = false)
     private LocalDateTime postdate;
 
+<<<<<<< HEAD
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+=======
+    @Column(nullable = false)
+    private boolean pinned = false;
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+>>>>>>> origin/matt-dev
     private List<Comment> comments = new ArrayList<>();
+
+    @Column(nullable = false)
+    private boolean locked = false;
 
     private static final int DAYS_PER_MONTH = 30;
     private static final long CACHE_TTL_SECONDS = 30;
@@ -75,15 +85,20 @@ public class Post {
     public String getTimeString() {
         LocalDateTime now = LocalDateTime.now();
         TimeCache cache = this.timeCache;
-        if (cache != null && Duration.between(cache.computedAt(), now).getSeconds() < CACHE_TTL_SECONDS) {
+
+        if (cache != null &&
+                Duration.between(cache.computedAt(), now).getSeconds() < CACHE_TTL_SECONDS) {
             return cache.value();
         }
+
         Duration d = Duration.between(postdate, now);
         String result;
+
         long months = d.toDays() / DAYS_PER_MONTH;
         long days = d.toDays();
         long hours = d.toHours();
         long minutes = d.toMinutes();
+
         if (months > 0) {
             result = months + " month" + (months == 1 ? "" : "s") + " ago";
         } else if (days > 0) {
@@ -95,7 +110,9 @@ public class Post {
         } else {
             result = "Just a moment ago!";
         }
+
         this.timeCache = new TimeCache(result, now);
+
         return result;
     }
 
@@ -121,38 +138,6 @@ public class Post {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Subforum getSubforum() {
-        return subforum;
-    }
-
-    public void setSubforum(Subforum subforum) {
-        this.subforum = subforum;
-    }
-
-    public LocalDateTime getPostdate() {
-        return postdate;
-    }
-
-    public void setPostdate(LocalDateTime postdate) {
-        this.postdate = postdate;
-    }
-
-    public List<Comment> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
     }
 
     public String getMediaUrl() {
@@ -199,6 +184,7 @@ public class Post {
         return mediaUrl;
     }
 
+<<<<<<< HEAD
     public List<PostLike> getLikes() {
         return likes;
     }
@@ -207,3 +193,53 @@ public class Post {
         this.likes = likes;
     }
 }
+=======
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Subforum getSubforum() {
+        return subforum;
+    }
+
+    public void setSubforum(Subforum subforum) {
+        this.subforum = subforum;
+    }
+
+    public LocalDateTime getPostdate() {
+        return postdate;
+    }
+
+    public void setPostdate(LocalDateTime postdate) {
+        this.postdate = postdate;
+    }
+
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+}
+>>>>>>> origin/matt-dev
