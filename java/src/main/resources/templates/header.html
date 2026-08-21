@@ -14,11 +14,11 @@
             <a class="brand"
                th:href="@{/}"
                th:text="${siteName}">
-                SCHOONER
+                DIY STARDUST
             </a>
 
             <p class="brand-subtitle">
-                a schooner forum
+                a DIY Stardust forum
             </p>
 
         </div>
@@ -55,28 +55,24 @@
                 Index
             </a>
 
-            <a th:href="@{/search}">
-                Search
-            </a>
-
             <a sec:authorize="isAuthenticated()"
-               th:href="@{/profile}">
-                Profile
-            </a>
-
-            <a sec:authorize="isAuthenticated()"
-               th:href="@{/messages}">
+            th:href="@{/messages}">
                 Messages
             </a>
 
             <a sec:authorize="isAuthenticated()"
-               th:href="@{/bookmarks}">
+            th:href="@{/bookmarks}">
                 Bookmarks
             </a>
 
             <a sec:authorize="isAuthenticated()"
-               th:href="@{/notifications}">
+            th:href="@{/notifications}">
                 Notifications
+            </a>
+
+            <a sec:authorize="isAuthenticated()"
+            th:href="@{/profile}">
+                Profile
             </a>
 
         </nav>
@@ -87,7 +83,7 @@
              sec:authorize="isAuthenticated()">
 
             <span class="user-label"
-                  th:text="'Hello, ' + ${currentUser}">
+                  th:text="${'Hello, ' + #authentication.name}">
                 Hello, user
             </span>
 
