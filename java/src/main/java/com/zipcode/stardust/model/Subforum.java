@@ -17,6 +17,9 @@ public class Subforum {
 
     @Column
     private String description;
+    
+    @Column
+    private String icon;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
@@ -33,9 +36,10 @@ public class Subforum {
 
     public Subforum() {}
 
-    public Subforum(String title, String description, Subforum parent) {
+    public Subforum(String title, String description, String icon, Subforum parent) {
         this.title = title;
         this.description = description;
+	this.icon = icon;
         this.parent = parent;
     }
 
@@ -53,4 +57,7 @@ public class Subforum {
     public void setPosts(List<Post> posts) { this.posts = posts; }
     public boolean isHidden() { return hidden; }
     public void setHidden(boolean hidden) { this.hidden = hidden; }
+    public String getIcon() { return icon; }
+    public void setIcon(String icon) { this.icon = icon; }
 }
+
