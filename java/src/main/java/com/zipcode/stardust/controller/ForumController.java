@@ -84,8 +84,7 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        List<Subforum> topLevel =
-                subforumRepository.findByParentIsNull();
+        List<Subforum> topLevel = subforumRepository.findByParentIsNull();
 
         model.addAttribute("subforums", topLevel);
 
@@ -100,8 +99,7 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        Optional<Subforum> opt =
-                subforumRepository.findById(sub);
+        Optional<Subforum> opt = subforumRepository.findById(sub);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -109,14 +107,11 @@ public class ForumController {
 
         Subforum sf = opt.get();
 
-        List<Post> posts =
-                postRepository.findBySubforumOrderByPostdateDesc(sf);
+        List<Post> posts = postRepository.findBySubforumOrderByPostdateDesc(sf);
 
-        List<Subforum> children =
-                subforumRepository.findByParent(sf);
+        List<Subforum> children = subforumRepository.findByParent(sf);
 
-        String breadcrumb =
-                forumService.generateLinkPath(sub);
+        String breadcrumb = forumService.generateLinkPath(sub);
 
         model.addAttribute("subforum", sf);
         model.addAttribute("posts", posts);
@@ -163,15 +158,13 @@ public class ForumController {
         if (!forumService.validUsername(username)) {
             errors.add(
                     "Username must be 4-40 alphanumeric characters " +
-                    "(also allowed: !@#%&)."
-            );
+                            "(also allowed: !@#%&).");
         }
 
         if (!forumService.validPassword(password)) {
             errors.add(
                     "Password must be 6-40 alphanumeric characters " +
-                    "(also allowed: !@#%&)."
-            );
+                            "(also allowed: !@#%&).");
         }
 
         if (forumService.usernameTaken(username)) {
@@ -193,31 +186,35 @@ public class ForumController {
                 email,
                 username,
                 password,
-                passwordEncoder
-        );
+                passwordEncoder);
 
         userRepository.save(user);
 
         return "redirect:/loginform";
     }
+
     @GetMapping("/profile")
-public String profile(
-        Model model,
-        Authentication auth) {
+    public String profile(
+            Model model,
+            Authentication auth) {
 
-    addCommonAttributes(model, auth);
+        addCommonAttributes(model, auth);
 
-    if (auth == null || !auth.isAuthenticated()
-            || "anonymousUser".equals(auth.getPrincipal())) {
-        return "redirect:/loginform";
+        if (auth == null || !auth.isAuthenticated()
+                || "anonymousUser".equals(auth.getPrincipal())) {
+            return "redirect:/loginform";
+        }
+
+        User user = getCurrentUser(auth);
+
+        List<Post> recentPosts = postRepository.findTop5ByUserOrderByPostdateDesc(user);
+
+        model.addAttribute("profileUser", user);
+        model.addAttribute("recentPosts", recentPosts);
+
+        return "profile";
     }
 
-    User user = getCurrentUser(auth);
-
-    model.addAttribute("profileUser", user);
-
-    return "profile";
-    }
     @GetMapping("/addpost")
     public String addPostForm(
             @RequestParam Long sub,
@@ -226,8 +223,7 @@ public String profile(
 
         addCommonAttributes(model, auth);
 
-        Optional<Subforum> opt =
-                subforumRepository.findById(sub);
+        Optional<Subforum> opt = subforumRepository.findById(sub);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -258,18 +254,15 @@ public String profile(
 
         if (!forumService.validTitle(title)) {
             errors.add(
-                    "Title must be between 5 and 139 characters."
-            );
+                    "Title must be between 5 and 139 characters.");
         }
 
         if (!forumService.validContent(content)) {
             errors.add(
-                    "Content must be between 11 and 4999 characters."
-            );
+                    "Content must be between 11 and 4999 characters.");
         }
 
-        Optional<Subforum> opt =
-                subforumRepository.findById(sub);
+        Optional<Subforum> opt = subforumRepository.findById(sub);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -289,8 +282,7 @@ public String profile(
                 title,
                 content,
                 user,
-                opt.get()
-        );
+                opt.get());
 
         if (mediaUrl != null && !mediaUrl.isBlank()) {
             post.setMediaUrl(mediaUrl.trim());
@@ -309,8 +301,7 @@ public String profile(
 
         addCommonAttributes(model, auth);
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -318,13 +309,10 @@ public String profile(
 
         Post p = opt.get();
 
-        List<Comment> comments =
-                commentRepository.findByPostOrderByPostdateAsc(p);
+        List<Comment> comments = commentRepository.findByPostOrderByPostdateAsc(p);
 
-        String breadcrumb =
-                forumService.generateLinkPath(
-                        p.getSubforum().getId()
-                );
+        String breadcrumb = forumService.generateLinkPath(
+                p.getSubforum().getId());
 
         model.addAttribute("post", p);
         model.addAttribute("comments", comments);
@@ -335,13 +323,11 @@ public String profile(
 
         model.addAttribute(
                 "likeCount",
-                postLikeService.getLikeCount(p)
-        );
+                postLikeService.getLikeCount(p));
 
         model.addAttribute(
                 "hasLiked",
-                postLikeService.hasLiked(currentUser, p)
-        );
+                postLikeService.hasLiked(currentUser, p));
 
         return "viewpost";
     }
@@ -362,8 +348,7 @@ public String profile(
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -398,8 +383,7 @@ public String profile(
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -418,14 +402,12 @@ public String profile(
 
         if (!forumService.validTitle(title)) {
             errors.add(
-                    "Title must be between 5 and 139 characters."
-            );
+                    "Title must be between 5 and 139 characters.");
         }
 
         if (!forumService.validContent(content)) {
             errors.add(
-                    "Content must be between 11 and 4999 characters."
-            );
+                    "Content must be between 11 and 4999 characters.");
         }
 
         if (!errors.isEmpty()) {
@@ -457,8 +439,7 @@ public String profile(
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -473,8 +454,7 @@ public String profile(
             return "redirect:/viewpost?post=" + post;
         }
 
-        Long subforumId =
-                p.getSubforum().getId();
+        Long subforumId = p.getSubforum().getId();
 
         postRepository.delete(p);
 
@@ -494,8 +474,7 @@ public String profile(
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -530,8 +509,7 @@ public String profile(
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -541,8 +519,7 @@ public String profile(
 
         postLikeService.toggleLike(
                 user,
-                opt.get()
-        );
+                opt.get());
 
         return "redirect:/viewpost?post=" + post;
     }
@@ -561,8 +538,7 @@ public String profile(
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -573,8 +549,7 @@ public String profile(
         Comment comment = new Comment(
                 content,
                 user,
-                opt.get()
-        );
+                opt.get());
 
         commentRepository.save(comment);
 

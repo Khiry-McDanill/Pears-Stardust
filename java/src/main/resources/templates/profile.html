@@ -5,53 +5,79 @@
 
 <body>
 
-<div class="stardust-shell">
+    <div class="stardust-shell">
 
-    <div th:replace="~{header :: header}"></div>
+        <div th:replace="~{header :: header}"></div>
 
-    <main class="page">
+        <main class="page">
 
-        <div class="breadcrumb">
-            <span>FORUM / PROFILE</span>
-        </div>
-
-        <section class="blueprint-form">
-
-            <p class="eyebrow">
-                USER // PROFILE
-            </p>
-
-            <h1>Profile</h1>
-
-            <div class="form-group">
-
-                <label>
-                    Username
-                </label>
-
-                <p th:text="${profileUser.username}">
-                    username
-                </p>
-
+            <div class="breadcrumb">
+                <span>FORUM / PROFILE</span>
             </div>
 
-            <div class="form-group">
+            <section class="blueprint-form">
 
-                <label>
-                    Email
-                </label>
-
-                <p th:text="${profileUser.email}">
-                    email@example.com
+                <p class="eyebrow">
+                    USER // PROFILE
                 </p>
 
-            </div>
+                <h1>Profile</h1>
 
-        </section>
+                <div class="form-group">
 
-    </main>
+                    <label>
+                        Username
+                    </label>
 
-</div>
+                    <p th:text="${profileUser.username}">
+                        username
+                    </p>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>
+                        Email
+                    </label>
+
+                    <p th:text="${profileUser.email}">
+                        email@example.com
+                    </p>
+
+                </div>
+                <hr>
+
+                <div class="form-group">
+
+                    <label>Recent Posts</label>
+
+                    <div th:if="${recentPosts.isEmpty()}" class="empty-state">
+                        You haven't posted anything yet.
+                    </div>
+
+                    <div th:each="post : ${recentPosts}" class="comment-block">
+
+                        <a th:href="@{/viewpost(post=${post.id})}" th:text="${post.title}">
+                            Post Title
+                        </a>
+
+                        <p class="post-meta">
+                            Posted
+                            <span th:text="${post.timeString}">
+                                recently
+                            </span>
+                        </p>
+
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
+
+    </div>
 
 </body>
+
 </html>
