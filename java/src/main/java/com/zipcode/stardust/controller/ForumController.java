@@ -49,10 +49,10 @@ public class ForumController {
     @Autowired
     private PostLikeService postLikeService;
 
-    @Value("${site.name:Schooner}")
+    @Value("${site.name:DIY Stardust}")
     private String siteName;
 
-    @Value("${site.description:a schooner forum}")
+    @Value("${site.description:a DIY Stardust forum}")
     private String siteDescription;
 
     private User getCurrentUser(Authentication auth) {
