@@ -1,34 +1,82 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Messages</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{layout :: head('Messages')}"></head>
 
 <body>
 
-<div th:replace="~{header :: header}"></div>
+<div class="stardust-shell">
 
-<main class="container">
+    <div th:replace="~{header :: header}"></div>
 
-    <h2>Messages</h2>
-    <p>Select a user to start or continue a conversation.</p>
+    <main class="page messages-page">
 
-    <div th:each="user : ${users}">
-
-        <div th:if="${user.username != currentUser.username}">
-
-            <a th:href="@{/messages/{username}(username=${user.username})}"
-               th:text="${user.username}">
-                Username
-            </a>
-
+        <div class="breadcrumb">
+            <span>FORUM / MESSAGES</span>
         </div>
 
-    </div>
+        <section class="messages-container">
 
-</main>
+            <!-- PAGE HEADER -->
+            <div class="messages-header">
+
+                <p class="eyebrow">
+                    DIRECT MESSAGES
+                </p>
+
+                <h1>Messages</h1>
+
+                <p>
+                    Select a user to start or continue a conversation.
+                </p>
+
+            </div>
+
+
+            <!-- USER LIST -->
+            <div class="message-user-list">
+
+                <div th:each="user : ${users}">
+
+                    <!-- Don't show yourself -->
+                    <a th:if="${user.username != currentUser.username}"
+                       th:href="@{/messages/{username}(username=${user.username})}"
+                       class="message-user-card">
+
+                        <div class="message-user-avatar">
+                            <span th:text="${#strings.substring(user.username, 0, 1).toUpperCase()}">
+                                U
+                            </span>
+                        </div>
+
+                        <div class="message-user-info">
+
+                            <strong th:text="${user.username}">
+                                Username
+                            </strong>
+
+                            <span>
+                                Open conversation
+                            </span>
+
+                        </div>
+
+                        <div class="message-user-arrow">
+                            →
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+</div>
 
 </body>
 </html>
