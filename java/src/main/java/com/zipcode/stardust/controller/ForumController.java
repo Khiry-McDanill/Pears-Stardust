@@ -86,7 +86,29 @@ public class ForumController {
 
         List<Subforum> topLevel = subforumRepository.findByParentIsNull();
 
-        model.addAttribute("subforums", topLevel);
+            topLevel.sort((a, b) -> {
+                List<String> order = List.of(
+                    "Announcements",
+                    "General Discussion",
+                    "Build & Make",
+                    "Home Improvement",
+                    "Tech & Coding",
+                    "Creative Projects",
+                    "Auto & Mechanics",
+                    "Outdoors & Fishing",
+                    "Tools & Gear",
+                    "Repair & Reuse",
+                    "Bug Reports",
+                    "Other"
+                );
+
+                return Integer.compare(
+                    order.indexOf(a.getTitle()),
+                    order.indexOf(b.getTitle())
+                );
+            });
+
+            model.addAttribute("subforums", topLevel);
 
         return "subforums";
     }

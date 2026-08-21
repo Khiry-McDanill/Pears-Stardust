@@ -566,6 +566,27 @@ button {
         border-left: 0;
         border-top: 1px solid var(--blueprint-line);
     }
+
+    .subforum-title-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .subforum-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .subforum-link .title {
+        font-size: 1.1rem;
+        letter-spacing: 0.08em;
+    }
 }
 
 /* =========================
