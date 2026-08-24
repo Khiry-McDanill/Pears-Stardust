@@ -12,29 +12,75 @@ public class DataInitializer implements ApplicationRunner {
 
     @Autowired
     private SubforumRepository subforumRepository;
+    
+        @Override
+        public void run(ApplicationArguments args) {
 
-    @Override
-    public void run(ApplicationArguments args) {
         if (subforumRepository.count() == 0) {
-            Subforum forum = new Subforum("Forum",
-                    "Announcements, bug reports, and general discussion about the forum belongs here", null);
-            subforumRepository.save(forum);
 
-            Subforum announcements = new Subforum("Announcements",
-                    "View forum announcements here", forum);
-            subforumRepository.save(announcements);
+                Subforum build = new Subforum(
+                        "Build & Make",
+                        "Woodworking, fabrication, building projects, and making things from scratch.",
+                        "🔨",
+                        null
+                );
+                subforumRepository.save(build);
 
-            Subforum bugReports = new Subforum("Bug Reports",
-                    "Report bugs with the forum here", forum);
-            subforumRepository.save(bugReports);
+                Subforum home = new Subforum(
+                        "Home Improvement",
+                        "Repairs, remodeling, electrical, plumbing, and improving your space.",
+                        "🏠",
+                        null
+                );
+                subforumRepository.save(home);
 
-            Subforum general = new Subforum("General Discussion",
-                    "Use this subforum to post anything you want", null);
-            subforumRepository.save(general);
+                Subforum tech = new Subforum(
+                        "Tech & Coding",
+                        "Programming, AI, computers, electronics, and building with technology.",
+                        "💻",
+                        null
+                );
+                subforumRepository.save(tech);
 
-            Subforum other = new Subforum("Other",
-                    "Discuss other things here", null);
-            subforumRepository.save(other);
+                Subforum creative = new Subforum(
+                        "Creative Projects",
+                        "Photography, video, art, design, and hands-on creative projects.",
+                        "🎨",
+                        null
+                );
+                subforumRepository.save(creative);
+
+                Subforum auto = new Subforum(
+                        "Auto & Mechanics",
+                        "Vehicle repairs, maintenance, modifications, restoration, and mechanical projects.",
+                        "🚗",
+                        null
+                );
+                subforumRepository.save(auto);
+
+                Subforum outdoors = new Subforum(
+                        "Outdoors & Fishing",
+                        "Fishing, camping, hiking, outdoor projects, and getting outside.",
+                        "🎣",
+                        null
+                );
+                subforumRepository.save(outdoors);
+
+                Subforum tools = new Subforum(
+                        "Tools & Gear",
+                        "Tools, equipment, workshop setups, gear reviews, and recommendations.",
+                        "🧰",
+                        null
+                );
+                subforumRepository.save(tools);
+
+                Subforum repair = new Subforum(
+                        "Repair & Reuse",
+                        "Fix it, restore it, repurpose it, and give things another life.",
+                        "♻️",
+                        null
+                );
+                subforumRepository.save(repair);
         }
-    }
+}
 }

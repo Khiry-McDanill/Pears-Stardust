@@ -1,40 +1,84 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <head th:replace="~{layout :: head('Forum Index')}"></head>
+
 <body>
+
 <div class="stardust-shell">
+
     <div th:replace="~{header :: header}"></div>
 
     <main class="page">
+
         <section class="section-heading">
+
             <div>
                 <p class="eyebrow">STARDUST // DIRECTORY</p>
-                <h1 th:text="${siteName} + ' // Forum Index'">STARDUST // Forum Index</h1>
-                <p th:text="${siteDescription}">Discussion forum</p>
+
+                <h1 th:text="${siteName} + ' // Forum Index'">
+                    STARDUST // Forum Index
+                </h1>
+
+                <p th:text="${siteDescription}">
+                    Discussion forum
+                </p>
             </div>
+
         </section>
 
+
         <section class="subforum-list">
+
             <a th:each="sf : ${subforums}"
                th:href="@{/subforum(sub=${sf.id})}"
                th:unless="${sf.hidden}"
                class="blueprint-card subforum-link">
 
-                <span class="title" th:text="${sf.title}">Subforum Title</span>
-                <span class="card-description" th:text="${sf.description}">Description</span>
+                <div class="subforum-title-row">
+
+                    <span class="subforum-icon"
+                          th:text="${sf.icon}">
+                        🔨
+                    </span>
+
+                    <span class="title"
+                          th:text="${sf.title}">
+                        Subforum Title
+                    </span>
+
+                </div>
+
+                <span class="card-description"
+                      th:text="${sf.description}">
+                    Description
+                </span>
+
             </a>
 
-            <div th:if="${subforums.isEmpty()}" class="empty-state">
+
+            <div th:if="${subforums.isEmpty()}"
+                 class="empty-state">
+
                 No subforums available.
+
             </div>
+
         </section>
 
+
         <footer class="site-footer">
+
             <span>STARDUST // FORUM SYSTEM</span>
+
             <span>STATUS: ONLINE</span>
+
         </footer>
+
     </main>
+
 </div>
+
 </body>
 </html>

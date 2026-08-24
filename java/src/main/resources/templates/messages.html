@@ -1,60 +1,101 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Messages</title>
-    <link rel="stylesheet" th:href="@{/style.css}">
-</head>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
+<head th:replace="~{layout :: head('Messages')}"></head>
+
 <body>
 
-<div th:replace="~{header :: header}"></div>
+<div class="stardust-shell">
 
-<main class="messages-page">
+    <div th:replace="~{header :: header}"></div>
 
-    <h2>
-        Conversation with
-        <span th:text="${otherUser.username}">User</span>
-    </h2>
+    <main class="page messages-page">
 
-    <div class="message-thread">
-
-        <div th:if="${#lists.isEmpty(messages)}">
-            <p>No messages yet.</p>
+        <div class="breadcrumb">
+            <span>FORUM / MESSAGES</span>
         </div>
 
-        <div th:each="message : ${messages}" class="message">
+        <section class="messages-container">
 
-            <strong th:text="${message.sender.username}">
-                Username
-            </strong>
+            <!-- CONVERSATION HEADER -->
+            <div class="messages-header">
+                <div>
+                    <p class="eyebrow">DIRECT MESSAGES</p>
 
-            <p th:text="${message.content}">
-                Message content
-            </p>
+                    <h1>
+                        Conversation with
+                        <span th:text="${otherUser.username}">
+                            User
+                        </span>
+                    </h1>
+                </div>
+            </div>
 
-            <small th:text="${message.sentAt}">
-                Time
-            </small>
 
-        </div>
+            <!-- MESSAGE THREAD -->
+            <div class="message-thread">
 
-    </div>
+                <div th:if="${#lists.isEmpty(messages)}"
+                     class="empty-state">
 
-    <form th:action="@{/messages/{username}(username=${otherUser.username})}"
-          method="post">
+                    No messages yet. Start the conversation.
 
-        <textarea
-                name="content"
-                placeholder="Type a message..."
-                required></textarea>
+                </div>
 
-        <button type="submit">
-            Send
-        </button>
 
-    </form>
+                <div th:each="message : ${messages}"
+                     class="message-row"
+                     th:classappend="${message.sender.username == #authentication.name}
+                         ? ' sent'
+                         : ' received'">
 
-</main>
+                    <div class="message-bubble">
+
+                        <div class="message-sender"
+                             th:text="${message.sender.username}">
+                            Username
+                        </div>
+
+                        <p class="message-content"
+                           th:text="${message.content}">
+                            Message content
+                        </p>
+
+                        <small class="message-time"
+                               th:text="${#temporals.format(message.sentAt,
+                               'MMM d, h:mm a')}">
+                            Time
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- MESSAGE COMPOSER -->
+            <form class="message-compose"
+                  th:action="@{/messages/{username}(username=${otherUser.username})}"
+                  method="post">
+
+                <textarea
+                        name="content"
+                        placeholder="Type a message..."
+                        required></textarea>
+
+                <button type="submit">
+                    Send
+                </button>
+
+            </form>
+
+        </section>
+
+    </main>
+
+</div>
 
 </body>
 </html>

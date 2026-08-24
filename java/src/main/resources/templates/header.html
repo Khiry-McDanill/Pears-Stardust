@@ -1,53 +1,118 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+
 <body>
-<nav th:fragment="header" class="navbar navbar-dark forum-header">
-    <div class="container">
-        <a class="navbar-brand" th:href="@{/}" th:text="${siteName}">DIY HELPER</a>
 
-        <div class="navbar-nav flex-row">
-            <a class="nav-link text-white mr-3" th:href="@{/}">Subforum Index</a>
+<header th:fragment="header" class="site-header">
 
-                <a class="nav-link text-white mr-3"
-                th:href="@{/search}">
-                    Search
-                </a>
-            <span sec:authorize="isAuthenticated()">
-                <a class="nav-link text-white mr-3 d-inline"
-                   th:href="@{/messages}">Messages</a>
+    <div class="header-content">
 
-                   <a sec:authorize="isAuthenticated()"
-                        th:href="@{/bookmarks}">
-                            Bookmarks
-                        </a>
-                    
-                        <a sec:authorize="isAuthenticated()"
-                            th:href="@{/notifications}">
-                                Notifications
-                            </a>
-                            
-                <span class="text-white mr-2"
-                      th:text="'Hello, ' + ${currentUser}">Hello, user</span>
+        <!-- BRAND -->
+        <div class="brand-block">
 
-                <form th:action="@{/action_logout}"
-                      method="post"
-                      class="d-inline">
-                    <button type="submit"
-                            class="btn btn-link nav-link text-white d-inline p-0">
-                        Logout
-                    </button>
-                </form>
-            </span>
+            <a class="brand"
+               th:href="@{/}"
+               th:text="${siteName}">
+                DIY STARDUST
+            </a>
 
-            <span sec:authorize="!isAuthenticated()">
-                <a class="nav-link text-white d-inline"
-                   th:href="@{/loginform}">
-                    Login / Register
-                </a>
-            </span>
+            <p class="brand-subtitle">
+                a DIY Stardust forum
+            </p>
+
+        </div>
+
+
+        <!-- SEARCH -->
+        <form class="header-search"
+              th:action="@{/search}"
+              method="get">
+
+            <input
+                type="text"
+                name="q"
+                placeholder="Search forums, topics, users..."
+                aria-label="Search"
+                required
+            />
+
+            <button type="submit">
+                Search
+            </button>
+
+        </form>
+
+
+        <!-- NAVIGATION -->
+        <nav class="site-nav">
+
+            <a th:href="@{/}">
+                Subforum
+            </a>
+
+            <a th:href="@{/}">
+                Index
+            </a>
+
+            <a sec:authorize="isAuthenticated()"
+            th:href="@{/messages}">
+                Messages
+            </a>
+
+            <a sec:authorize="isAuthenticated()"
+            th:href="@{/bookmarks}">
+                Bookmarks
+            </a>
+
+            <a sec:authorize="isAuthenticated()"
+            th:href="@{/notifications}">
+                Notifications
+            </a>
+
+            <a sec:authorize="isAuthenticated()"
+            th:href="@{/profile}">
+                Profile
+            </a>
+
         </nav>
+
+
+        <!-- USER AREA -->
+        <div class="user-area"
+             sec:authorize="isAuthenticated()">
+
+            <span class="user-label"
+                  th:text="${'Hello, ' + #authentication.name}">
+                Hello, user
+            </span>
+
+            <form th:action="@{/action_logout}"
+                  method="post">
+
+                <button type="submit"
+                        class="logout-button">
+                    Logout
+                </button>
+
+            </form>
+
+        </div>
+
+
+        <!-- LOGGED OUT -->
+        <div class="user-area"
+             sec:authorize="!isAuthenticated()">
+
+            <a th:href="@{/loginform}">
+                Login / Register
+            </a>
+
+        </div>
+
     </div>
+
 </header>
+
 </body>
 </html>

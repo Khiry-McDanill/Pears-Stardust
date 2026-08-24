@@ -60,6 +60,56 @@
 
 
             <!-- ========================= -->
+            <!-- MEDIA EMBEDDING -->
+            <!-- ========================= -->
+
+            <div th:if="${post.mediaUrl != null && !post.mediaUrl.isBlank()}"
+                 class="embedded-media"
+                 style="margin-top: 20px;">
+
+                <!-- YouTube -->
+
+                <iframe th:if="${post.mediaUrl.contains('youtube.com') || post.mediaUrl.contains('youtu.be')}"
+                        th:src="${post.embedUrl}"
+                        width="560"
+                        height="315"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                </iframe>
+
+
+                <!-- Direct image link -->
+
+                <img th:if="${post.mediaUrl.toLowerCase().endsWith('.jpg')
+                     || post.mediaUrl.toLowerCase().endsWith('.jpeg')
+                     || post.mediaUrl.toLowerCase().endsWith('.png')
+                     || post.mediaUrl.toLowerCase().endsWith('.gif')
+                     || post.mediaUrl.toLowerCase().endsWith('.webp')}"
+                     th:src="${post.mediaUrl}"
+                     alt="Embedded post media"
+                     style="max-width: 100%; height: auto;" />
+
+
+                <!-- Fallback link -->
+
+                <a th:unless="${post.mediaUrl.contains('youtube.com')
+                     || post.mediaUrl.contains('youtu.be')
+                     || post.mediaUrl.toLowerCase().endsWith('.jpg')
+                     || post.mediaUrl.toLowerCase().endsWith('.jpeg')
+                     || post.mediaUrl.toLowerCase().endsWith('.png')
+                     || post.mediaUrl.toLowerCase().endsWith('.gif')
+                     || post.mediaUrl.toLowerCase().endsWith('.webp')}"
+                   th:href="${post.mediaUrl}"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    Open attached media
+                </a>
+
+            </div>
+
+
+            <!-- ========================= -->
             <!-- EDIT / DELETE / PIN -->
             <!-- ========================= -->
 
@@ -164,6 +214,25 @@
                     </button>
 
                 </form>
+
+            </div>
+
+
+            <!-- ========================= -->
+            <!-- SHARE POST -->
+            <!-- ========================= -->
+
+            <div style="margin-top: 20px;">
+
+                <button type="button"
+                        class="blueprint-button"
+                        onclick="sharePost()">
+                    🔗 Share
+                </button>
+
+                <span id="share-message"
+                      style="margin-left: 10px;">
+                </span>
 
             </div>
 
@@ -278,6 +347,28 @@
     </main>
 
 </div>
+
+
+<!-- ========================= -->
+<!-- SHARE JAVASCRIPT -->
+<!-- ========================= -->
+
+<script>
+    function sharePost() {
+
+        const postUrl = window.location.href;
+        const message = document.getElementById("share-message");
+
+        navigator.clipboard.writeText(postUrl)
+            .then(function () {
+                message.textContent = "Link copied!";
+            })
+            .catch(function () {
+                message.textContent = "Unable to copy link.";
+            });
+    }
+</script>
+
 
 </body>
 </html>

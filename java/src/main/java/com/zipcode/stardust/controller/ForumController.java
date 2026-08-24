@@ -1,9 +1,8 @@
 package com.zipcode.stardust.controller;
 
-import com.zipcode.stardust.model.*;
-import com.zipcode.stardust.repository.*;
-import com.zipcode.stardust.service.ForumService;
-import com.zipcode.stardust.service.PostLikeService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,32 +10,54 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import com.zipcode.stardust.model.Comment;
+import com.zipcode.stardust.model.Post;
+import com.zipcode.stardust.model.Subforum;
+import com.zipcode.stardust.model.User;
+import com.zipcode.stardust.repository.CommentRepository;
+import com.zipcode.stardust.repository.PostRepository;
+import com.zipcode.stardust.repository.SubforumRepository;
+import com.zipcode.stardust.repository.UserRepository;
+import com.zipcode.stardust.service.ForumService;
+import com.zipcode.stardust.service.PostLikeService;
 
 @Controller
 public class ForumController {
 
-    @Autowired private SubforumRepository subforumRepository;
-    @Autowired private PostRepository postRepository;
-    @Autowired private CommentRepository commentRepository;
-    @Autowired private UserRepository userRepository;
-    @Autowired private PasswordEncoder passwordEncoder;
-    @Autowired private ForumService forumService;
-    @Autowired private PostLikeService postLikeService;
+    @Autowired
+    private SubforumRepository subforumRepository;
 
-    @Value("${site.name:Schooner}")
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ForumService forumService;
+
+    @Autowired
+    private PostLikeService postLikeService;
+
+    @Value("${site.name:DIY Stardust}")
     private String siteName;
 
-    @Value("${site.description:a schooner forum}")
+    @Value("${site.description:a DIY Stardust forum}")
     private String siteDescription;
 
     private User getCurrentUser(Authentication auth) {
-        if (auth == null || !auth.isAuthenticated() ||
-                "anonymousUser".equals(auth.getPrincipal())) {
+        if (auth == null || !auth.isAuthenticated()
+                || "anonymousUser".equals(auth.getPrincipal())) {
             return null;
         }
 
@@ -63,10 +84,31 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        List<Subforum> topLevel =
-                subforumRepository.findByParentIsNull();
+        List<Subforum> topLevel = subforumRepository.findByParentIsNull();
 
-        model.addAttribute("subforums", topLevel);
+            topLevel.sort((a, b) -> {
+                List<String> order = List.of(
+                    "Announcements",
+                    "General Discussion",
+                    "Build & Make",
+                    "Home Improvement",
+                    "Tech & Coding",
+                    "Creative Projects",
+                    "Auto & Mechanics",
+                    "Outdoors & Fishing",
+                    "Tools & Gear",
+                    "Repair & Reuse",
+                    "Bug Reports",
+                    "Other"
+                );
+
+                return Integer.compare(
+                    order.indexOf(a.getTitle()),
+                    order.indexOf(b.getTitle())
+                );
+            });
+
+            model.addAttribute("subforums", topLevel);
 
         return "subforums";
     }
@@ -79,8 +121,7 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        Optional<Subforum> opt =
-                subforumRepository.findById(sub);
+        Optional<Subforum> opt = subforumRepository.findById(sub);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -88,14 +129,11 @@ public class ForumController {
 
         Subforum sf = opt.get();
 
-        List<Post> posts =
-                postRepository.findBySubforumOrderByPostdateDesc(sf);
+        List<Post> posts = postRepository.findBySubforumOrderByPostdateDesc(sf);
 
-        List<Subforum> children =
-                subforumRepository.findByParent(sf);
+        List<Subforum> children = subforumRepository.findByParent(sf);
 
-        String breadcrumb =
-                forumService.generateLinkPath(sub);
+        String breadcrumb = forumService.generateLinkPath(sub);
 
         model.addAttribute("subforum", sf);
         model.addAttribute("posts", posts);
@@ -142,15 +180,13 @@ public class ForumController {
         if (!forumService.validUsername(username)) {
             errors.add(
                     "Username must be 4-40 alphanumeric characters " +
-                    "(also allowed: !@#%&)."
-            );
+                            "(also allowed: !@#%&).");
         }
 
         if (!forumService.validPassword(password)) {
             errors.add(
                     "Password must be 6-40 alphanumeric characters " +
-                    "(also allowed: !@#%&)."
-            );
+                            "(also allowed: !@#%&).");
         }
 
         if (forumService.usernameTaken(username)) {
@@ -168,17 +204,37 @@ public class ForumController {
             return "login";
         }
 
-        User user =
-                new User(
-                        email,
-                        username,
-                        password,
-                        passwordEncoder
-                );
+        User user = new User(
+                email,
+                username,
+                password,
+                passwordEncoder);
 
         userRepository.save(user);
 
         return "redirect:/loginform";
+    }
+
+    @GetMapping("/profile")
+    public String profile(
+            Model model,
+            Authentication auth) {
+
+        addCommonAttributes(model, auth);
+
+        if (auth == null || !auth.isAuthenticated()
+                || "anonymousUser".equals(auth.getPrincipal())) {
+            return "redirect:/loginform";
+        }
+
+        User user = getCurrentUser(auth);
+
+        List<Post> recentPosts = postRepository.findTop5ByUserOrderByPostdateDesc(user);
+
+        model.addAttribute("profileUser", user);
+        model.addAttribute("recentPosts", recentPosts);
+
+        return "profile";
     }
 
     @GetMapping("/addpost")
@@ -189,8 +245,7 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        Optional<Subforum> opt =
-                subforumRepository.findById(sub);
+        Optional<Subforum> opt = subforumRepository.findById(sub);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -207,6 +262,7 @@ public class ForumController {
             @RequestParam Long sub,
             @RequestParam String title,
             @RequestParam String content,
+            @RequestParam(required = false) String mediaUrl,
             Model model,
             Authentication auth) {
 
@@ -220,18 +276,15 @@ public class ForumController {
 
         if (!forumService.validTitle(title)) {
             errors.add(
-                    "Title must be between 5 and 139 characters."
-            );
+                    "Title must be between 5 and 139 characters.");
         }
 
         if (!forumService.validContent(content)) {
             errors.add(
-                    "Content must be between 11 and 4999 characters."
-            );
+                    "Content must be between 11 and 4999 characters.");
         }
 
-        Optional<Subforum> opt =
-                subforumRepository.findById(sub);
+        Optional<Subforum> opt = subforumRepository.findById(sub);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -247,13 +300,15 @@ public class ForumController {
 
         User user = getCurrentUser(auth);
 
-        Post post =
-                new Post(
-                        title,
-                        content,
-                        user,
-                        opt.get()
-                );
+        Post post = new Post(
+                title,
+                content,
+                user,
+                opt.get());
+
+        if (mediaUrl != null && !mediaUrl.isBlank()) {
+            post.setMediaUrl(mediaUrl.trim());
+        }
 
         postRepository.save(post);
 
@@ -268,8 +323,7 @@ public class ForumController {
 
         addCommonAttributes(model, auth);
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -277,13 +331,10 @@ public class ForumController {
 
         Post p = opt.get();
 
-        List<Comment> comments =
-                commentRepository.findByPostOrderByPostdateAsc(p);
+        List<Comment> comments = commentRepository.findByPostOrderByPostdateAsc(p);
 
-        String breadcrumb =
-                forumService.generateLinkPath(
-                        p.getSubforum().getId()
-                );
+        String breadcrumb = forumService.generateLinkPath(
+                p.getSubforum().getId());
 
         model.addAttribute("post", p);
         model.addAttribute("comments", comments);
@@ -294,13 +345,11 @@ public class ForumController {
 
         model.addAttribute(
                 "likeCount",
-                postLikeService.getLikeCount(p)
-        );
+                postLikeService.getLikeCount(p));
 
         model.addAttribute(
                 "hasLiked",
-                postLikeService.hasLiked(currentUser, p)
-        );
+                postLikeService.hasLiked(currentUser, p));
 
         return "viewpost";
     }
@@ -321,8 +370,7 @@ public class ForumController {
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -357,8 +405,7 @@ public class ForumController {
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -377,14 +424,12 @@ public class ForumController {
 
         if (!forumService.validTitle(title)) {
             errors.add(
-                    "Title must be between 5 and 139 characters."
-            );
+                    "Title must be between 5 and 139 characters.");
         }
 
         if (!forumService.validContent(content)) {
             errors.add(
-                    "Content must be between 11 and 4999 characters."
-            );
+                    "Content must be between 11 and 4999 characters.");
         }
 
         if (!errors.isEmpty()) {
@@ -416,8 +461,7 @@ public class ForumController {
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -432,8 +476,7 @@ public class ForumController {
             return "redirect:/viewpost?post=" + post;
         }
 
-        Long subforumId =
-                p.getSubforum().getId();
+        Long subforumId = p.getSubforum().getId();
 
         postRepository.delete(p);
 
@@ -453,8 +496,7 @@ public class ForumController {
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -489,8 +531,7 @@ public class ForumController {
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -500,8 +541,7 @@ public class ForumController {
 
         postLikeService.toggleLike(
                 user,
-                opt.get()
-        );
+                opt.get());
 
         return "redirect:/viewpost?post=" + post;
     }
@@ -520,8 +560,7 @@ public class ForumController {
             return "redirect:/loginform";
         }
 
-        Optional<Post> opt =
-                postRepository.findById(post);
+        Optional<Post> opt = postRepository.findById(post);
 
         if (opt.isEmpty()) {
             return "redirect:/";
@@ -529,12 +568,10 @@ public class ForumController {
 
         User user = getCurrentUser(auth);
 
-        Comment comment =
-                new Comment(
-                        content,
-                        user,
-                        opt.get()
-                );
+        Comment comment = new Comment(
+                content,
+                user,
+                opt.get());
 
         commentRepository.save(comment);
 

@@ -112,6 +112,93 @@ button {
     color: var(--blueprint-muted);
 }
 
+.brand-block {
+    flex: 0 0 auto;
+}
+
+.header-search {
+    display: flex;
+    align-items: stretch;
+    flex: 1 1 420px;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.header-search input {
+    width: 100%;
+    min-width: 0;
+    padding: 10px 13px;
+    color: var(--blueprint-text);
+    background: rgba(0, 20, 40, 0.28);
+    border: 1px solid var(--blueprint-line);
+    border-right: 0;
+    border-radius: 4px 0 0 4px;
+}
+
+.header-search input::placeholder {
+    color: var(--blueprint-muted);
+}
+
+.header-search input:focus {
+    outline: none;
+    border-color: #fff;
+    box-shadow: 0 0 0 1px #fff;
+}
+
+.header-search button {
+    padding: 0 16px;
+    color: var(--blueprint-text);
+    background: transparent;
+    border: 1px solid var(--blueprint-line);
+    border-radius: 0 4px 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.header-search button:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.site-nav {
+    flex: 0 0 auto;
+}
+
+.site-nav a {
+    white-space: nowrap;
+}
+
+.user-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 18px;
+    border-left: 1px solid var(--blueprint-line);
+    white-space: nowrap;
+}
+
+.user-area a {
+    color: var(--blueprint-text);
+    text-decoration: none;
+}
+
+.user-area form {
+    margin: 0;
+}
+
+.logout-button {
+    color: var(--blueprint-text);
+    background: transparent;
+    border: 1px solid var(--blueprint-line);
+    padding: 8px 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.72rem;
+}
+
+.logout-button:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
 .page {
     max-width: 1180px;
     margin: 0 auto;
@@ -455,5 +542,306 @@ button {
 
     .site-footer {
         flex-direction: column;
+    }
+
+    .header-content {
+        align-items: stretch;
+    }
+
+    .header-search {
+        width: 100%;
+        max-width: none;
+        margin: 8px 0;
+    }
+
+    .site-nav {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .user-area {
+        width: 100%;
+        padding-left: 0;
+        padding-top: 12px;
+        border-left: 0;
+        border-top: 1px solid var(--blueprint-line);
+    }
+
+    .subforum-title-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .subforum-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 42px;
+        height: 42px;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .subforum-link .title {
+        font-size: 1.1rem;
+        letter-spacing: 0.08em;
+    }
+}
+
+/* =========================
+   DIRECT MESSAGES
+   ========================= */
+
+.messages-page {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.messages-container {
+    border: 1px solid var(--blueprint-line);
+    background: rgba(0, 40, 75, 0.32);
+}
+
+.messages-header {
+    padding: 22px 26px;
+    border-bottom: 1px solid var(--blueprint-line);
+}
+
+.messages-header h1 {
+    margin: 4px 0 0;
+}
+
+.message-thread {
+    min-height: 420px;
+    max-height: 600px;
+    overflow-y: auto;
+
+    padding: 28px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+
+    background: rgba(0, 20, 40, 0.28);
+}
+
+.message-row {
+    display: flex;
+    width: 100%;
+}
+
+.message-row.received {
+    justify-content: flex-start;
+}
+
+.message-row.sent {
+    justify-content: flex-end;
+}
+
+.message-bubble {
+    max-width: 65%;
+    padding: 12px 16px;
+
+    border: 1px solid var(--blueprint-line);
+    border-radius: 6px;
+
+    background: rgba(0, 40, 75, 0.55);
+
+    color: var(--blueprint-text);
+}
+
+.message-row.sent .message-bubble {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #ffffff;
+}
+
+.message-sender {
+    margin-bottom: 5px;
+
+    color: var(--blueprint-muted);
+
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.message-content {
+    margin: 0;
+
+    color: var(--blueprint-text);
+
+    line-height: 1.5;
+    word-wrap: break-word;
+}
+
+.message-time {
+    display: block;
+    margin-top: 8px;
+
+    color: var(--blueprint-muted);
+
+    font-size: 0.7rem;
+}
+
+.message-compose {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+
+    padding: 18px 22px;
+
+    border-top: 1px solid var(--blueprint-line);
+    background: rgba(0, 40, 75, 0.32);
+}
+
+.message-compose textarea {
+    flex: 1;
+
+    min-height: 60px;
+    max-height: 140px;
+
+    padding: 12px;
+
+    resize: vertical;
+
+    color: var(--blueprint-text);
+    background: rgba(0, 20, 40, 0.28);
+
+    border: 1px solid var(--blueprint-line);
+    border-radius: 0;
+
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.message-compose textarea::placeholder {
+    color: var(--blueprint-muted);
+}
+
+.message-compose textarea:focus {
+    outline: none;
+    border-color: #ffffff;
+    box-shadow: 0 0 0 1px #ffffff;
+}
+
+.message-compose button {
+    min-width: 100px;
+    padding: 0 20px;
+
+    color: var(--blueprint-text);
+    background: transparent;
+
+    border: 1px solid var(--blueprint-line);
+
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.message-compose button:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+
+/* =========================
+   MESSAGE USER LIST
+   ========================= */
+
+.message-user-list {
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message-user-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    padding: 16px 18px;
+
+    border: 1px solid var(--blueprint-line-soft);
+
+    background: rgba(0, 40, 75, 0.24);
+
+    text-decoration: none;
+    color: var(--blueprint-text);
+
+    transition: background 0.15s ease,
+                border-color 0.15s ease;
+}
+
+.message-user-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--blueprint-line);
+}
+
+.message-user-avatar {
+    width: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border: 1px solid var(--blueprint-line);
+
+    color: var(--blueprint-text);
+    background: rgba(0, 20, 40, 0.28);
+
+    font-size: 1.1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.message-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    flex: 1;
+}
+
+.message-user-info strong {
+    color: var(--blueprint-text);
+    font-size: 1rem;
+}
+
+.message-user-info span {
+    color: var(--blueprint-muted);
+    font-size: 0.8rem;
+}
+
+.message-user-arrow {
+    color: var(--blueprint-muted);
+
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.message-user-card:hover .message-user-arrow {
+    color: var(--blueprint-text);
+}
+
+
+/* MOBILE */
+
+@media (max-width: 700px) {
+
+    .message-bubble {
+        max-width: 82%;
+    }
+
+    .message-compose {
+        flex-direction: column;
+    }
+
+    .message-compose button {
+        min-height: 44px;
     }
 }
