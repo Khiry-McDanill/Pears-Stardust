@@ -1,0 +1,13 @@
+🌟 Stardust Tech Stack
+Programming Language	☕ Java 17
+Backend Framework	Spring Boot 3.2.5
+Web Framework	Spring MVC / Spring Web
+Frontend / Templates	Thymeleaf
+Security	Spring Security 6
+Database	MySQL
+Database Access	Spring Data JPA
+ORM	Hibernate / JPA
+Database Driver	MySQL Connector/J
+Build Tool	Maven
+Testing	JUnit / Spring Boot Test
+Version Control	Git / GitHub
